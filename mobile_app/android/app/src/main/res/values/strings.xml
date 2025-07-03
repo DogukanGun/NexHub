@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">NexWallet</string>
+    <string name="action_go">Go</string>
+    <string name="baking_title">Baking with Gemini</string>
+    <string name="label_prompt">Prompt</string>
+    <string name="prompt_placeholder">Provide a recipe for the baked goods in the image</string>
+    <string name="image1_description">Cupcake</string>
+    <string name="image2_description">Cookies</string>
+    <string name="image3_description">Cake</string>
+    <string name="results_placeholder">(Results will appear here)</string>
+    <string name="alert_dialog_user_input">Please write here …</string>
+    <string name="ai_view_title">Creative Studio</string>
+    <string name="ai_view_create_image">Create Image</string>
+    <string name="ai_view_create_video">Create Video</string>
+    <string name="ai_view_create_image_button_filter">Apply Cartoon Filter</string>
+    <string name="ai_view_create_image_by_text">Create Image by Describing</string>
+    <string name="ai_view_create_video_by_text">Create Video by Describing</string>
+    <string name="ai_view_warning">After you choose one of the options a new page to create your desire will come.</string>
+    <string name="home_destination_title">Home</string>
+    <string name="solana_destination_title">Solana Chat</string>
+    <string name="bnb_destination_title">Bnb News</string>
+    <string name="ai_destination_title">Creative Studio</string>
+</resources>
