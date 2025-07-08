@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/app/aiagent" />
             <option value="$PROJECT_DIR$/solana-ai" />
+            <option value="$PROJECT_DIR$/solana-ai/wallet" />
           </set>
         </option>
       </GradleProjectSettings>

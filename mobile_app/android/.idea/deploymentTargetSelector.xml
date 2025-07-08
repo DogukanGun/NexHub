@@ -13,26 +13,16 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="HomeView">
-        <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-04-06T11:26:09.214427Z">
-          <Target type="DEFAULT_BOOT">
-            <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=R68T401BB6H" />
-            </handle>
-          </Target>
-        </DropdownSelection>
-        <DialogSelection>
-          <targets>
-            <Target type="DEFAULT_BOOT">
-              <handle>
-                <DeviceId pluginId="PhysicalDevice" identifier="serial=R68T401BB6H" />
-              </handle>
-            </Target>
-          </targets>
-        </DialogSelection>
-      </SelectionState>
       <SelectionState runConfigName="ChatViewPreview">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="solana-ai.wallet">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="CryptoManagerTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="encryption_works_as_expected()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

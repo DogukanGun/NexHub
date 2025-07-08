@@ -4,6 +4,4 @@ import com.dag.aiagent.AiAgent
 
 class SolanaAiAgent: AiAgent() {
     
-
-    
 }

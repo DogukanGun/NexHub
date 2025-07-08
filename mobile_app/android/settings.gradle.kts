@@ -23,3 +23,4 @@ rootProject.name = "NexWallet"
 include(":app")
 include(":solana-ai")
 include(":app:aiagent")
+include(":solana-ai:wallet")
