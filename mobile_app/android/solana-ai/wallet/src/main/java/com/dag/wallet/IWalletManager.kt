@@ -1,6 +1,7 @@
 package com.dag.wallet
 
 import androidx.fragment.app.FragmentActivity
+import com.solana.core.Account
 
 
 interface IWalletManager {
@@ -12,7 +13,7 @@ interface IWalletManager {
     fun signTransaction(
         txAsBase58: String,
         activity: FragmentActivity,
-        onResult: (List<String>) -> Unit,
+        onResult: (ByteArray) -> Unit,
         onFailure: (() -> Unit)? = null
     )
     fun saveRecoveryWallet(
@@ -25,4 +26,5 @@ interface IWalletManager {
         onResult: (String) -> Unit,
         onFailure: (() -> Unit)? = null
     )
+    fun getPublicKey(): Account
 }

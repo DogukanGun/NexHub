@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.dag.aiagent"
+    namespace = "com.example.agent"
     compileSdk = 35
 
     defaultConfig {
@@ -13,9 +13,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
-    buildFeatures {
-        buildConfig = true
-    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -35,15 +33,24 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit.v115)
-    androidTestImplementation(libs.androidx.espresso.core.v351)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(project(":app:aiagent"))
+    implementation(project(":solana-ai:wallet"))
     implementation(libs.langchain4j)
     implementation(libs.langchain4j.openai)
     implementation(libs.langchain4j.open.ai)
+    implementation(libs.ktor.client.core.v321)
+    implementation(libs.ktor.client.cio.v321)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.solana)
+    implementation(libs.solana)
+    implementation(libs.solanakt)
+    implementation(libs.metaplex.android)
     implementation(libs.langchain4j.google.ai.gemini.v0361)
+
 }

@@ -16,6 +16,7 @@ plugins {
 buildscript{
     repositories {
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
         google()
     }
     dependencies {

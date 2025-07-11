@@ -1,3 +1,6 @@
+import org.gradle.kotlin.dsl.maven
+import org.gradle.kotlin.dsl.mavenCentral
+
 pluginManagement {
     repositories {
         google {
@@ -16,6 +19,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
@@ -24,3 +28,8 @@ include(":app")
 include(":solana-ai")
 include(":app:aiagent")
 include(":solana-ai:wallet")
+include(":myapplication")
+include(":solana-ai:ag_ent")
+include(":solana-ai:sagent")
+include(":solana-ai:agent")
+include(":solana-ai:s_agent")

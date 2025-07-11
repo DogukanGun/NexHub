@@ -1,6 +1,6 @@
-package com.dag.solai.tools.misc.elfaAi
+package com.example.agent.tools.misc.elfaAi
 
-import com.dag.solai.BuildConfig
+import com.dag.wallet.BuildConfig
 import dev.langchain4j.agent.tool.Tool
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO

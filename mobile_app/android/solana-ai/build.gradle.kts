@@ -12,16 +12,6 @@ android {
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-        val coinGeckoApiKey = System.getenv("COIN_GECKO_KEY") ?: project.findProperty("COIN_GECKO_KEY")?.toString() ?: "\"\""
-        buildConfigField("String", "COIN_GECKO_KEY", "\"$coinGeckoApiKey\"")
-        val alloraToolKey = System.getenv("ALLORA_API_KEY") ?: project.findProperty("ALLORA_API_KEY")?.toString() ?: "\"\""
-        buildConfigField("String", "ALLORA_API_KEY", "\"$alloraToolKey\"")
-        val elfaAiKey = System.getenv("ELFA_AI_API_KEY") ?: project.findProperty("ELFA_AI_API_KEY")?.toString() ?: "\"\""
-        buildConfigField("String", "ELFA_AI_API_KEY", "\"$elfaAiKey\"")
-        val heliusKey = System.getenv("HELIUS_API_KEY") ?: project.findProperty("HELIUS_API_KEY")?.toString() ?: "\"\""
-        buildConfigField("String", "HELIUS_API_KEY", "\"$heliusKey\"")
-        val messariKey = System.getenv("MESSARI_API_KEY") ?: project.findProperty("MESSARI_API_KEY")?.toString() ?: "\"\""
-        buildConfigField("String", "MESSARI_API_KEY", "\"$messariKey\"")
     }
 
     buildFeatures {
