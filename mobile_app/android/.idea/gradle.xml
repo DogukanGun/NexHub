@@ -12,12 +12,10 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/app/aiagent" />
-            <option value="$PROJECT_DIR$/myapplication" />
+            <option value="$PROJECT_DIR$/evm" />
+            <option value="$PROJECT_DIR$/launchpad" />
             <option value="$PROJECT_DIR$/solana-ai" />
-            <option value="$PROJECT_DIR$/solana-ai/ag_ent" />
             <option value="$PROJECT_DIR$/solana-ai/agent" />
-            <option value="$PROJECT_DIR$/solana-ai/s_agent" />
-            <option value="$PROJECT_DIR$/solana-ai/sagent" />
             <option value="$PROJECT_DIR$/solana-ai/wallet" />
           </set>
         </option>

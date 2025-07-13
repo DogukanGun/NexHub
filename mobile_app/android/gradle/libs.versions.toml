@@ -46,6 +46,7 @@ protobufJavalite = "3.21.11"
 protobufKotlinLite = "3.21.11"
 retrofit = "2.9.0"
 rpcCore = "0.2.7"
+sdk = "1.0.+"
 securityCrypto = "1.1.0-alpha06"
 solana = "0.2.1"
 solanaKt = "0.0.1"
@@ -124,6 +125,7 @@ protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.
 protobuf-kotlin-lite = { module = "com.google.protobuf:protobuf-kotlin-lite", version.ref = "protobufKotlinLite" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 rpc-core = { module = "com.solanamobile:rpc-core", version.ref = "rpcCore" }
+sdk = { module = "circle.programmablewallet:sdk", version.ref = "sdk" }
 solana = { module = "foundation.metaplex:solana", version.ref = "solana" }
 solana-kt = { module = "com.metaplex:solana.kt", version.ref = "solanaKt" }
 solanakt = { module = "com.github.metaplex-foundation:SolanaKT", version.ref = "solanaktVersion" }

@@ -18,6 +18,8 @@ buildscript{
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
         google()
+        maven { url = uri("https://maven.pkg.github.com/circlefin/w3s-android-sdk") }
+
     }
     dependencies {
         classpath(libs.hilt.android.gradle.plugin)
