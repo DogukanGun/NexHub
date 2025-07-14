@@ -3,12 +3,15 @@ import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
 import { LaunchpadFactory, ERC20Mock, Launchpad } from "../typechain-types";
 
+const { log } = console;
+
 describe("LaunchpadFactory", function () {
   let launchpadFactory: LaunchpadFactory;
   let owner: SignerWithAddress;
   let user: SignerWithAddress;
   let signer: SignerWithAddress;
   let mockToken: ERC20Mock;
+  let usdcToken: ERC20Mock;
 
   beforeEach(async function () {
     // Get signers
@@ -22,10 +25,22 @@ describe("LaunchpadFactory", function () {
       owner.address, 
       ethers.parseEther("1000000")
     );
+    usdcToken = await ERC20MockFactory.connect(owner).deploy(
+      "USDC", 
+      "USDC", 
+      owner.address, 
+      ethers.parseEther("1000000")
+    );
 
     // Deploy LaunchpadFactory
     const LaunchpadFactoryFactory = await ethers.getContractFactory("LaunchpadFactory");
-    launchpadFactory = await LaunchpadFactoryFactory.connect(owner).deploy(owner.address);
+      launchpadFactory = await LaunchpadFactoryFactory.connect(owner).deploy(owner.address, usdcToken);
+      // Approve USDC for LaunchpadFactory
+      // Approve the LaunchpadFactory to spend 39 USDC (with 6 decimals)
+    await usdcToken.approve(await launchpadFactory.getAddress(), ethers.parseUnits("195", 6));
+
+    log("Allowance after approval:", await usdcToken.allowance(owner.address, await launchpadFactory.getAddress()));
+
   });
 
   describe("Launchpad Creation", function () {
@@ -58,6 +73,9 @@ describe("LaunchpadFactory", function () {
       // Verify Launchpad details
       const LaunchpadFactory = await ethers.getContractFactory("Launchpad");
       const launchpad = LaunchpadFactory.attach(launchpads[0]) as Launchpad;
+
+      // Transfer mock tokens to the newly created Launchpad
+      await mockToken.transfer(launchpad.target, ethers.parseEther("1000")); 
 
       expect(await launchpad.claimableToken()).to.equal(mockToken.target);
       expect(await launchpad.owner()).to.equal(owner.address);
@@ -154,7 +172,7 @@ describe("LaunchpadFactory", function () {
       // Try to invalidate from a non-owner account
       await expect(
         launchpadFactory.connect(user).invalidateLaunchpad(launchpadAddress)
-      ).to.be.revertedWithoutReason(); // Ownable's modifier reverts without a reason
+      ).to.be.revertedWithCustomError(launchpadFactory, "OwnableUnauthorizedAccount");
     });
 
     it("Should prevent invalidating a non-existent Launchpad", async function () {

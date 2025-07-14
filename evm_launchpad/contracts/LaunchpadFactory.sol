@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import {Launchpad} from "./Launchpad.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /**
  * @title LaunchpadFactory
@@ -11,6 +12,8 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
  * @dev Allows creation of multiple Launchpad contracts with different configurations
  */
 contract LaunchpadFactory is Ownable {
+    using SafeERC20 for IERC20;
+
     // Events
     event LaunchpadCreated(
         address indexed launchpad, 
@@ -21,12 +24,26 @@ contract LaunchpadFactory is Ownable {
     // Storage
     address[] public launchpads;
     mapping(address => bool) public isLaunchpadValid;
+    IERC20 public usdcToken;
+
+    // NEW: Super admin to receive fees
+    address public superAdmin;
+
+    // NEW: Fee structure (0.001% = 1 / 100,000)
+    uint256 public constant FEE_NUMERATOR = 1;
+    uint256 public constant FEE_DENOMINATOR = 100000;
+
+    // NEW: Deployment fee in USDC (39 USDC with 6 decimals)
+    uint256 private constant DEPLOYMENT_FEE = 39 * 10**6;
 
     /**
      * @notice Constructor to set initial owner
      * @param initialOwner Address to be set as the contract owner
      */
-    constructor(address initialOwner) Ownable(initialOwner) {}
+    constructor(address initialOwner, IERC20 _usdcToken) Ownable(initialOwner) {
+        usdcToken = _usdcToken;
+        superAdmin = initialOwner; // For simplicity, setting superAdmin to initialOwner
+    }
 
     /**
      * @notice Create a new Launchpad instance
@@ -55,6 +72,10 @@ contract LaunchpadFactory is Ownable {
             name, 
             version
         );
+
+        // NEW: Charge 39 USDC deployment fee from the contract deployer
+        // The deployer (msg.sender) must approve this contract to spend their USDC first
+        usdcToken.safeTransferFrom(msg.sender, superAdmin, DEPLOYMENT_FEE);
 
         // Transfer ownership to the factory owner
         launchpad.transferOwnership(owner());

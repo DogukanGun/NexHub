@@ -20,7 +20,7 @@ describe("LaunchpadClaim", function () {
 
     // Deploy mock ERC20 token
     const ERC20MockFactory = await ethers.getContractFactory("ERC20Mock");
-    mockToken = await ERC20MockFactory.connect(owner).deploy("MockToken", "MTK", owner.address, 1000000);
+    mockToken = await ERC20MockFactory.connect(owner).deploy("MockToken", "MTK", owner.address, ethers.parseEther("1000000"));
 
     // Deploy LaunchpadClaim
     const LaunchpadFactory = await ethers.getContractFactory("Launchpad");
@@ -32,7 +32,7 @@ describe("LaunchpadClaim", function () {
     );
 
     // Mint tokens to the contract
-    await mockToken.connect(owner).transfer(launchpadClaim.target, 500000);
+    await mockToken.connect(owner).transfer(launchpadClaim.target, ethers.parseEther("500000"));
   });
 
   async function generateSignature(
