@@ -1,7 +1,7 @@
 // Import the framework and instantiate it
 import Fastify from 'fastify'
 import 'dotenv/config'
-import { connect } from '../utils/mongo/connect'
+import { connect } from './utils/mongo/connect'
 import router from './routers'
 
 const fastify = Fastify({
