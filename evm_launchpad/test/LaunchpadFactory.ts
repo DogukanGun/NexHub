@@ -34,7 +34,7 @@ describe("LaunchpadFactory", function () {
 
     // Deploy LaunchpadFactory
     const LaunchpadFactoryFactory = await ethers.getContractFactory("LaunchpadFactory");
-      launchpadFactory = await LaunchpadFactoryFactory.connect(owner).deploy(owner.address, usdcToken);
+    launchpadFactory = await LaunchpadFactoryFactory.connect(owner).deploy(owner.address, usdcToken);
       // Approve USDC for LaunchpadFactory
       // Approve the LaunchpadFactory to spend 39 USDC (with 6 decimals)
     await usdcToken.approve(await launchpadFactory.getAddress(), ethers.parseUnits("195", 6));
@@ -45,12 +45,13 @@ describe("LaunchpadFactory", function () {
 
   describe("Launchpad Creation", function () {
     it("Should create a new Launchpad instance", async function () {
+      const sellerPrice = ethers.parseEther("10"); // Example seller price
+
       // Create Launchpad
       const tx = await launchpadFactory.createLaunchpad(
         mockToken.target, 
         signer.address, 
-        "TestLaunchpad", 
-        "1.0"
+        sellerPrice
       );
 
       // Wait for transaction and get receipt
@@ -58,7 +59,7 @@ describe("LaunchpadFactory", function () {
 
       // Check event was emitted
       const events = receipt?.logs.filter(
-        log => log.topics[0] === ethers.id("LaunchpadCreated(address,address,address)")
+        log => log.topics[0] === ethers.id("LaunchpadCreated(address,address,address,uint256)")
       );
       expect(events).to.have.lengthOf(1);
 
@@ -82,13 +83,14 @@ describe("LaunchpadFactory", function () {
     });
 
     it("Should prevent creating Launchpad with invalid inputs", async function () {
+      const sellerPrice = ethers.parseEther("10"); // Example seller price
+
       // Zero address for token
       await expect(
         launchpadFactory.createLaunchpad(
           ethers.ZeroAddress, 
           signer.address, 
-          "TestLaunchpad", 
-          "1.0"
+          sellerPrice
         )
       ).to.be.revertedWith("Invalid token address");
 
@@ -97,41 +99,30 @@ describe("LaunchpadFactory", function () {
         launchpadFactory.createLaunchpad(
           mockToken.target, 
           ethers.ZeroAddress, 
-          "TestLaunchpad", 
-          "1.0"
+          sellerPrice
         )
       ).to.be.revertedWith("Invalid signer address");
 
-      // Empty domain name
+      // Zero seller price
       await expect(
         launchpadFactory.createLaunchpad(
           mockToken.target, 
           signer.address, 
-          "", 
-          "1.0"
+          0
         )
-      ).to.be.revertedWith("Invalid domain name");
-
-      // Empty domain version
-      await expect(
-        launchpadFactory.createLaunchpad(
-          mockToken.target, 
-          signer.address, 
-          "TestLaunchpad", 
-          ""
-        )
-      ).to.be.revertedWith("Invalid domain version");
+      ).to.be.revertedWith("Invalid seller price");
     });
 
     it("Should allow creating multiple Launchpads", async function () {
       // Create multiple Launchpads
       const launchpadCount = 5;
+      const sellerPrice = ethers.parseEther("10"); // Example seller price
+
       for (let i = 0; i < launchpadCount; i++) {
         await launchpadFactory.createLaunchpad(
           mockToken.target, 
           signer.address, 
-          `TestLaunchpad${i}`, 
-          "1.0"
+          sellerPrice
         );
       }
 
@@ -143,14 +134,14 @@ describe("LaunchpadFactory", function () {
 
   describe("Launchpad Management", function () {
     let launchpadAddress: string;
+    const sellerPrice = ethers.parseEther("10"); // Example seller price
 
     beforeEach(async function () {
       // Create a Launchpad for testing
       const tx = await launchpadFactory.createLaunchpad(
         mockToken.target, 
         signer.address, 
-        "TestLaunchpad", 
-        "1.0"
+        sellerPrice
       );
       const receipt = await tx.wait();
       const launchpads = await launchpadFactory.getAllLaunchpads();

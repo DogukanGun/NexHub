@@ -26,9 +26,7 @@ describe("LaunchpadClaim", function () {
     const LaunchpadFactory = await ethers.getContractFactory("Launchpad");
     launchpadClaim = await LaunchpadFactory.connect(owner).deploy(
       mockToken.target, 
-      signer.address, 
-      "Launchpad", 
-      "1.0"
+      signer.address
     );
 
     // Mint tokens to the contract
@@ -43,7 +41,7 @@ describe("LaunchpadClaim", function () {
     deadline: number
   ) {
     const domain: TypedDataDomain = {
-        name: "Launchpad",
+      name: "Launchpad",
       version: "1.0",
       chainId: (await ethers.provider.getNetwork()).chainId,
       verifyingContract: launchpadClaim.target as string
@@ -184,6 +182,81 @@ describe("LaunchpadClaim", function () {
       launchpadClaim.connect(owner).updateSigner(newSigner.address)
     ).to.emit(launchpadClaim, "SignerUpdated")
       .withArgs(signer.address, newSigner.address);
+  });
 
+  it("Should prevent claims after finalization", async function () {
+    // Simulate time passing
+    await ethers.provider.send("evm_increaseTime", [7 * 24 * 60 * 60]); // 1 week
+    await ethers.provider.send("evm_mine", []);
+
+    // Withdraw investments (which finalizes the launchpad)
+    await launchpadClaim.connect(owner).withdrawInvestments();
+
+    const allowedAmount = ethers.parseEther("100");
+    const roundId = 1;
+    const deadline = Math.floor(Date.now() / 1000) + 3600;
+
+    const signature = await generateSignature(
+      signer, 
+      user.address, 
+      allowedAmount, 
+      roundId, 
+      deadline
+    );
+
+    // Claim should fail after finalization
+    await expect(
+      launchpadClaim.connect(user).claim(
+        allowedAmount, 
+        roundId, 
+        deadline, 
+        signature
+      )
+    ).to.be.revertedWith("Launchpad has been finalized");
+  });
+
+  it("Should allow owner to withdraw investments after 1 week", async function () {
+    // Simulate time passing
+    await ethers.provider.send("evm_increaseTime", [7 * 24 * 60 * 60]); // 1 week
+    await ethers.provider.send("evm_mine", []);
+
+    const initialContractBalance = await mockToken.balanceOf(launchpadClaim.target);
+    const initialOwnerBalance = await mockToken.balanceOf(owner.address);
+    
+    // Withdraw investments
+    await expect(
+      launchpadClaim.connect(owner).withdrawInvestments()
+    ).to.emit(launchpadClaim, "InvestmentWithdrawn")
+      .and.to.emit(launchpadClaim, "LaunchpadFinalized");
+
+    // Check that tokens were transferred to owner
+    const finalContractBalance = await mockToken.balanceOf(launchpadClaim.target);
+    const finalOwnerBalance = await mockToken.balanceOf(owner.address);
+
+    expect(finalContractBalance).to.equal(0n);
+    expect(finalOwnerBalance).to.equal(initialOwnerBalance + initialContractBalance);
+
+    // Verify launchpad is finalized
+    expect(await launchpadClaim.isFinalized()).to.be.true;
+  });
+
+  it("Should prevent withdrawing investments before 1 week", async function () {
+    await expect(
+      launchpadClaim.connect(owner).withdrawInvestments()
+    ).to.be.revertedWith("Withdrawal not yet available");
+  });
+
+  it("Should prevent multiple withdrawals", async function () {
+    // Simulate time passing
+    await ethers.provider.send("evm_increaseTime", [7 * 24 * 60 * 60]); // 1 week
+    await ethers.provider.send("evm_mine", []);
+
+    // First withdrawal should succeed
+    await launchpadClaim.connect(owner).withdrawInvestments();
+
+    // Second withdrawal should fail
+    await expect(
+      launchpadClaim.connect(owner).withdrawInvestments()
+    ).to.be.revertedWith("Launchpad already finalized");
   });
 }); 

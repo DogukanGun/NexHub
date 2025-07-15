@@ -26,11 +26,21 @@ contract Launchpad is EIP712, Ownable {
         address indexed previousSigner, 
         address indexed newSigner
     );
+    event InvestmentWithdrawn(
+        uint256 amount,
+        uint256 withdrawalTime
+    );
+    event LaunchpadFinalized(
+        address indexed owner
+    );
     
 
     // --- Storage ---
     IERC20 public immutable claimableToken;
     address public signer;
+    bool public isFinalized;
+    uint256 public deploymentTime;
+    uint256 public constant WITHDRAWAL_PERIOD = 1 weeks;
 
     // Tracking claimed status per user and round
     mapping(address => mapping(uint256 => bool)) public hasClaimed;
@@ -44,19 +54,16 @@ contract Launchpad is EIP712, Ownable {
      * @notice Constructor to initialize the contract
      * @param _token Address of the token to be claimed
      * @param _signer Initial signer address for signature verification
-     * @param _name Domain name for EIP-712
-     * @param _version Domain version for EIP-712
      */
     constructor(
         IERC20 _token, 
-        address _signer, 
-        string memory _name, 
-        string memory _version
-    ) EIP712(_name, _version) Ownable(msg.sender) {
+        address _signer
+    ) EIP712("Launchpad", "1.0") Ownable(msg.sender) {
         require(_signer != address(0), "Invalid signer address");
         
         claimableToken = _token;
         signer = _signer;
+        deploymentTime = block.timestamp;
     }
 
     /**
@@ -72,6 +79,7 @@ contract Launchpad is EIP712, Ownable {
         uint256 deadline, 
         bytes calldata signature
     ) external {
+        require(!isFinalized, "Launchpad has been finalized");
         require(block.timestamp <= deadline, "Claim has expired");
         require(!hasClaimed[msg.sender][roundId], "Already claimed");
 
@@ -104,7 +112,28 @@ contract Launchpad is EIP712, Ownable {
 
         // Transfer the rest to the owner
         claimableToken.safeTransfer(owner(), balance);
+    }
 
+    /**
+     * @notice Withdraw all investments after 1 week of deployment and finalize the launchpad
+     * @dev This function can only be called by the owner after 1 week of deployment
+     */
+    function withdrawInvestments() external onlyOwner {
+        require(!isFinalized, "Launchpad already finalized");
+        require(block.timestamp >= deploymentTime + WITHDRAWAL_PERIOD, "Withdrawal not yet available");
+
+        uint256 balance = claimableToken.balanceOf(address(this));
+        
+        // Finalize the launchpad
+        isFinalized = true;
+
+        // Transfer remaining tokens to owner
+        if (balance > 0) {
+            claimableToken.safeTransfer(owner(), balance);
+        }
+
+        emit InvestmentWithdrawn(balance, block.timestamp);
+        emit LaunchpadFinalized(owner());
     }
 
     /**

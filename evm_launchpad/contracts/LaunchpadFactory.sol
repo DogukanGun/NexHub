@@ -18,7 +18,8 @@ contract LaunchpadFactory is Ownable {
     event LaunchpadCreated(
         address indexed launchpad, 
         address indexed token, 
-        address indexed signer
+        address indexed signer,
+        uint256 sellerPrice
     );
 
     // Storage
@@ -49,28 +50,23 @@ contract LaunchpadFactory is Ownable {
      * @notice Create a new Launchpad instance
      * @param token ERC20 token to be distributed
      * @param signer Address authorized to sign claims
-     * @param name EIP-712 domain name
-     * @param version EIP-712 domain version
+     * @param sellerPrice Price set by the seller for token distribution
      * @return launchpadAddress Address of the newly created Launchpad
      */
     function createLaunchpad(
         IERC20 token, 
         address signer, 
-        string memory name, 
-        string memory version
+        uint256 sellerPrice
     ) external returns (address launchpadAddress) {
         // Validate inputs
         require(address(token) != address(0), "Invalid token address");
         require(signer != address(0), "Invalid signer address");
-        require(bytes(name).length > 0, "Invalid domain name");
-        require(bytes(version).length > 0, "Invalid domain version");
+        require(sellerPrice > 0, "Invalid seller price");
 
         // Create Launchpad instance
         Launchpad launchpad = new Launchpad(
             token, 
-            signer, 
-            name, 
-            version
+            signer
         );
 
         // NEW: Charge 39 USDC deployment fee from the contract deployer
@@ -85,8 +81,8 @@ contract LaunchpadFactory is Ownable {
         launchpads.push(launchpadAddress);
         isLaunchpadValid[launchpadAddress] = true;
 
-        // Emit creation event
-        emit LaunchpadCreated(launchpadAddress, address(token), signer);
+        // Emit creation event with seller price
+        emit LaunchpadCreated(launchpadAddress, address(token), signer, sellerPrice);
 
         return launchpadAddress;
     }
