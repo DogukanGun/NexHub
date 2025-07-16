@@ -5,16 +5,33 @@ import CreateLaunchpadRequest from "../../models/request/createLaunchpad.request
 import { FastifyReply } from "fastify";
 import LaunchpadFactoryJSON from "../../abi/LaunchpadFactory.json";
 
+/**
+ * Creates a new launchpad with the provided details
+ * 
+ * This controller handles the process of creating a launchpad:
+ * - Validates environment configuration
+ * - Selects appropriate RPC URL based on environment
+ * - Deploys a LaunchpadFactory contract
+ * - Saves launchpad details to the database
+ * 
+ * @param {CreateLaunchpadRequest} req - The request containing launchpad creation details
+ * @param {FastifyReply} res - The Fastify reply object for sending response
+ * @returns {Promise<void>}
+ * @throws {Error} Throws an error if contract deployment or database saving fails
+ */
 const createLaunchpad = async (req: CreateLaunchpadRequest, res: FastifyReply) => {    
     const { name, description, price, createdBy, projectSocialLink } = req;
 
-    if (!process.env.RPC_URL || !process.env.PRIVATE_KEY || !process.env.USDC_TOKEN_ADDRESS) {
+    if (!process.env.PRIVATE_KEY || !process.env.USDC_TOKEN_ADDRESS) {
         return res.status(500).send({
             message: "Environment variables are not configured",
         });
     }
-    
-    const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+    let rpcUrl = process.env.BNB_TESTNET_RPC;
+    if (process.env.ENV === "production") {
+        rpcUrl = process.env.BNB_MAINNET_RPC;
+    }
+    const provider = new ethers.JsonRpcProvider(rpcUrl);
     const signer = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
 
     const usdcTokenAddress = process.env.USDC_TOKEN_ADDRESS;
