@@ -16,16 +16,15 @@ import LaunchpadFactoryJSON from "../../abi/LaunchpadFactory.json";
  * 
  * @param {CreateLaunchpadRequest} req - The request containing launchpad creation details
  * @param {FastifyReply} res - The Fastify reply object for sending response
- * @returns {Promise<void>}
- * @throws {Error} Throws an error if contract deployment or database saving fails
+ * @returns {Promise<object>} The created launchpad details
  */
 const createLaunchpad = async (req: CreateLaunchpadRequest, res: FastifyReply) => {    
     const { name, description, price, createdBy, projectSocialLink } = req;
 
     if (!process.env.PRIVATE_KEY || !process.env.USDC_TOKEN_ADDRESS) {
-        return res.status(500).send({
+        return {
             message: "Environment variables are not configured",
-        });
+        };
     }
     let rpcUrl = process.env.BNB_TESTNET_RPC;
     if (process.env.ENV === "production") {
@@ -36,9 +35,9 @@ const createLaunchpad = async (req: CreateLaunchpadRequest, res: FastifyReply) =
 
     const usdcTokenAddress = process.env.USDC_TOKEN_ADDRESS;
     if (!usdcTokenAddress) {
-        return res.status(500).send({
+        return {
             message: "USDC token address is not configured",
-        });
+        };
     }
 
     try {
@@ -69,16 +68,16 @@ const createLaunchpad = async (req: CreateLaunchpadRequest, res: FastifyReply) =
         });
         const savedLaunchpad = await dbRes.save();
     
-        res.status(201).send({
+        return {
           message: "Launchpad created successfully",
           data: savedLaunchpad,
-        });
+        };
     } catch (error) {
         console.error("Launchpad creation error:", error);
-        res.status(500).send({
+        return {
             message: "Failed to create launchpad",
             error: error instanceof Error ? error.message : error,
-        });
+        };
     }
 }
 

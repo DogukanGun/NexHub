@@ -16,7 +16,7 @@ import askToAgentService from "../../services/agent/askToAgent.service";
  * 
  * @param {AskAgentRequest} req - The incoming request containing user message and user ID
  * @param {FastifyReply} res - The Fastify reply object for sending response
- * @returns {Promise<void>}
+ * @returns {Promise<string>} The AI's response
  */
 const askToAgent = async (req: AskAgentRequest, res: FastifyReply) => {
     const { message, userId } = req;
@@ -42,7 +42,7 @@ const askToAgent = async (req: AskAgentRequest, res: FastifyReply) => {
         messageHistoryToSend = messageHistoryAsJson;
     }
     const response = await askToAgentService(message, messageHistoryToSend);
-    res.status(200).send(response);
+    return response;
 }
 
 export default askToAgent;  
