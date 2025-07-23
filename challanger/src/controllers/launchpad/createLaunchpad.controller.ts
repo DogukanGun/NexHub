@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import LaunchpadModel from "../../models/db/Launchpad.model";
 import CreateLaunchpadRequest from "../../models/request/createLaunchpad.request";
 import { FastifyReply } from "fastify";
-import LaunchpadFactoryJSON from "../../abi/LaunchpadFactory.json";
+import LaunchpadFactoryABI from "../../abi/LaunchpadFactory.abi";
 
 /**
  * Creates a new launchpad with the provided details
@@ -18,7 +18,7 @@ import LaunchpadFactoryJSON from "../../abi/LaunchpadFactory.json";
  * @param {FastifyReply} res - The Fastify reply object for sending response
  * @returns {Promise<object>} The created launchpad details
  */
-const createLaunchpad = async (req: CreateLaunchpadRequest, res: FastifyReply) => {    
+const createLaunchpad = async (req: CreateLaunchpadRequest, _res: FastifyReply) => {    
     const { name, description, price, createdBy, projectSocialLink } = req;
 
     if (!process.env.PRIVATE_KEY || !process.env.USDC_TOKEN_ADDRESS) {
@@ -43,8 +43,8 @@ const createLaunchpad = async (req: CreateLaunchpadRequest, res: FastifyReply) =
     try {
         // Create contract factory with ABI and signer
         const LaunchpadFactoryFactory = new ethers.ContractFactory(
-            LaunchpadFactoryJSON.abi, 
-            LaunchpadFactoryJSON.bytecode, 
+            LaunchpadFactoryABI,
+            "", // We'll need to add bytecode here
             signer
         );
 

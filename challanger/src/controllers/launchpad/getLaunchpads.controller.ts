@@ -11,7 +11,7 @@ import LaunchpadModel from "../../models/db/Launchpad.model";
  * @param {FastifyReply} res - The Fastify reply object for sending response
  * @returns {Promise<object[]>} List of launchpads
  */
-const getLaunchpads = async (res: FastifyReply) => {
+const getLaunchpads = async (_res: FastifyReply) => {
     const launchpads = await LaunchpadModel.find();
     return launchpads;
 }

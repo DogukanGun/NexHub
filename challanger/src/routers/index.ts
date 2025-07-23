@@ -6,24 +6,6 @@ import { AskAgentRequest } from "../models/request/askAgent.request";
 import CreateLaunchpadRequest from "../models/request/createLaunchpad.request";
 
 const router = async (fastify: FastifyInstance) => {
-    // Root route
-    fastify.get('/', {
-        schema: {
-            description: 'Health check endpoint',
-            tags: ['Health'],
-            response: {
-                200: {
-                    description: 'Successful response',
-                    type: 'object',
-                    properties: {
-                        hello: { type: 'string' }
-                    }
-                }
-            }
-        }
-    }, async (request: FastifyRequest, reply: FastifyReply) => {
-        return { hello: 'world' }
-    })
 
     // Agent route
     fastify.post('/agent/ask', {
@@ -46,8 +28,8 @@ const router = async (fastify: FastifyInstance) => {
             }
         }
     }, async (request: FastifyRequest<{ Body: AskAgentRequest }>, reply: FastifyReply) => {
-        const { message, userId } = request.body;
-        return await askToAgent({ message, userId }, reply);
+        const { message, userId, launchpadId } = request.body;
+        return await askToAgent({ message, userId, launchpadId }, reply);
     })
 
     // Launchpad routes
@@ -113,12 +95,9 @@ const router = async (fastify: FastifyInstance) => {
                 }
             }
         }
-    }, async (request: FastifyRequest, reply: FastifyReply) => {
+    }, async ( _request: FastifyRequest, reply: FastifyReply) => {
         return await getLaunchpads(reply);
     })
-
-    // Listen on port 3000
-    fastify.listen({ port: 3000 })
 }
 
 export default router;

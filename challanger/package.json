@@ -1,23 +1,24 @@
 {
   "name": "challanger",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "node --loader ts-node/esm src/server.ts",
     "test": "jest",
     "test:watch": "jest --watch",
-    "dev": "nodemon --exec ts-node src/server.ts"
+    "dev": "nodemon --exec 'node --loader ts-node/esm' src/server.ts"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@fastify/swagger": "^8.14.0",
-    "@fastify/swagger-ui": "^2.1.0",
+    "@fastify/swagger": "^8.3.1",
+    "@fastify/swagger-ui": "^1.9.3",
     "@openzeppelin/contracts": "^5.0.0",
     "dotenv": "^17.2.0",
     "ethers": "^6.15.0",
-    "fastify": "^5.4.0",
+    "fastify": "^4.24.0",
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.3",
     "openai": "^5.10.1",

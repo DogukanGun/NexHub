@@ -18,8 +18,8 @@ import askToAgentService from "../../services/agent/askToAgent.service";
  * @param {FastifyReply} res - The Fastify reply object for sending response
  * @returns {Promise<string>} The AI's response
  */
-const askToAgent = async (req: AskAgentRequest, res: FastifyReply) => {
-    const { message, userId } = req;
+const askToAgent = async (req: AskAgentRequest, _res: FastifyReply) => {
+    const { message, userId, launchpadId } = req;
     const messageHistory = await getFromRedis("message_history", userId);
     let messageHistoryToSend: AIMessage[] = [];
     if (!messageHistory) {
@@ -28,8 +28,6 @@ const askToAgent = async (req: AskAgentRequest, res: FastifyReply) => {
             role: "user",
             content: message,
         } as AIMessage]);
-        
-        // Save the message history to redis
         await saveToRedis("message_history", userId, initialMessageHistory);
         messageHistoryToSend = JSON.parse(initialMessageHistory);
     } else {
@@ -41,7 +39,7 @@ const askToAgent = async (req: AskAgentRequest, res: FastifyReply) => {
         await saveToRedis("message_history", userId, JSON.stringify(messageHistoryAsJson));
         messageHistoryToSend = messageHistoryAsJson;
     }
-    const response = await askToAgentService(message, messageHistoryToSend);
+    const response = await askToAgentService(message, messageHistoryToSend, launchpadId);
     return response;
 }
 
