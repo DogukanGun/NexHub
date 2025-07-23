@@ -1,57 +1,71 @@
 import { ethers } from "hardhat";
+import * as fs from "fs";
+import * as path from "path";
 
 async function main() {
   // Get signers
-  const [deployer, signer] = await ethers.getSigners();
+  const [deployer] = await ethers.getSigners();
 
   console.log("Deploying contracts with the account:", deployer.address);
   console.log("Account balance:", (await ethers.provider.getBalance(deployer.address)).toString());
 
-  // Deploy mock ERC20 token for testing
+  // Deploy mock USDC token for testing
   const ERC20MockFactory = await ethers.getContractFactory("ERC20Mock");
-  const mockToken = await ERC20MockFactory.deploy(
+  const mockUSDC = await ERC20MockFactory.deploy(
+    "USD Coin", 
+    "USDC", 
+    deployer.address, 
+    ethers.parseUnits("1000000", 6) // USDC has 6 decimals
+  );
+  await mockUSDC.waitForDeployment();
+  console.log("Mock USDC deployed to:", mockUSDC.target);
+
+  // Deploy project token
+  const projectToken = await ERC20MockFactory.deploy(
     "NexHubToken", 
     "NHT", 
     deployer.address, 
-    ethers.parseEther("1000000")
+    ethers.parseEther("1000000") // Project token uses 18 decimals
   );
-  await mockToken.waitForDeployment();
-  console.log("Mock Token deployed to:", mockToken.target);
+  await projectToken.waitForDeployment();
+  console.log("Project Token deployed to:", projectToken.target);
 
-  // Deploy LaunchpadFactory
+  // Deploy LaunchpadFactory with USDC
   const LaunchpadFactoryFactory = await ethers.getContractFactory("LaunchpadFactory");
-  const launchpadFactory = await LaunchpadFactoryFactory.deploy(deployer.address);
+  const launchpadFactory = await LaunchpadFactoryFactory.deploy(deployer.address, mockUSDC.target);
   await launchpadFactory.waitForDeployment();
   console.log("LaunchpadFactory deployed to:", launchpadFactory.target);
 
-  // Create first Launchpad instance
-  const createLaunchpadTx = await launchpadFactory.createLaunchpad(
-    mockToken.target,
-    signer.address,
-    "NexHubLaunchpad",
-    "1.0"
-  );
-  const createLaunchpadReceipt = await createLaunchpadTx.wait();
-  
-  // Get the deployed Launchpad address from events
-  const launchpadCreatedEvent = createLaunchpadReceipt?.logs.find(
-    log => log.topics[0] === ethers.id("LaunchpadCreated(address,address,address)")
-  );
-  
-  if (launchpadCreatedEvent) {
-    const launchpadAddress = `0x${launchpadCreatedEvent.topics[1].slice(-40)}`;
-    console.log("First Launchpad deployed to:", launchpadAddress);
+  // Approve LaunchpadFactory to spend USDC for deployment fee (39 USDC)
+  const deploymentFee = ethers.parseUnits("39", 6); // USDC has 6 decimals
+  await mockUSDC.approve(launchpadFactory.target, deploymentFee);
+  console.log("Approved LaunchpadFactory to spend USDC");
 
-    // Transfer some tokens to the Launchpad for claims
-    const LaunchpadFactory = await ethers.getContractFactory("Launchpad");
-    const launchpad = LaunchpadFactory.attach(launchpadAddress);
-    
-    const transferAmount = ethers.parseEther("100000");
-    await mockToken.transfer(launchpadAddress, transferAmount);
-    console.log(`Transferred ${ethers.formatEther(transferAmount)} tokens to Launchpad`);
-  }
+  // Save deployment information
+  const deployments = {
+    network: (await ethers.provider.getNetwork()).name,
+    deployer: deployer.address,
+    mockUSDC: mockUSDC.target,
+    projectToken: projectToken.target,
+    launchpadFactory: launchpadFactory.target
+  };
 
-  console.log("Deployment complete!");
+  // Save to file
+  const deploymentPath = path.join(__dirname, "../deployments.json");
+  fs.writeFileSync(
+    deploymentPath,
+    JSON.stringify(deployments, null, 2)
+  );
+  console.log(`Deployment addresses saved to ${deploymentPath}`);
+
+  // Log all important addresses
+  console.log("\nDeployment Summary:");
+  console.log("-------------------");
+  console.log("Mock USDC:", mockUSDC.target);
+  console.log("Project Token:", projectToken.target);
+  console.log("LaunchpadFactory:", launchpadFactory.target);
+  console.log("Deployer:", deployer.address);
+  console.log("\nDeployment complete!");
 }
 
 // Recommended pattern for handling async errors
