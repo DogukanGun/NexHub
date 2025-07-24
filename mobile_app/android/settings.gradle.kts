@@ -1,7 +1,6 @@
 import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.mavenCentral
 
-include(":launchpad")
 include(":evm")
 
 pluginManagement {
@@ -23,17 +22,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
-        maven {
-            val properties = java.util.Properties()
-            // Load local.properties.
-            properties.load(File(rootDir.absolutePath + "/local.properties").inputStream())
-
-            url = uri("https://maven.pkg.github.com/circlefin/w3s-android-sdk")
-            credentials {
-                username = properties.getProperty("pwsdk.maven.username")
-                password = properties.getProperty("pwsdk.maven.password")
-            }
-        }
     }
 }
 
@@ -43,3 +31,4 @@ include(":solana-ai")
 include(":app:aiagent")
 include(":solana-ai:wallet")
 include(":solana-ai:agent")
+include(":evm")

@@ -68,10 +68,6 @@ fun DefaultNavigationHost(
                 )
             }
 
-            composableWithAnimations<Destination.BNBChat> {
-                BnbScreen()
-            }
-
             composableWithAnimations<Destination.AIView> {
                 AIScreen()
             }

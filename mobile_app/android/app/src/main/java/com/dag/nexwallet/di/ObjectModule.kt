@@ -14,7 +14,6 @@ import com.dag.nexwallet.base.navigation.Destination
 import com.dag.nexwallet.base.scroll.ScrollStateManager
 import com.dag.nexwallet.data.repository.UserRepository
 import com.dag.nexwallet.domain.DataPreferencesStore
-import com.dag.nexwallet.stellar.StellarWallet
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
@@ -302,14 +301,6 @@ class ObjectModules {
                 header("Content-Type", "application/json")
             }
         }
-    }
-
-    @Provides
-    @Singleton
-    fun provideStellarWallet(
-        @ApplicationContext context: Context
-    ): StellarWallet {
-        return StellarWallet(context, isTestNetwork = BuildConfig.DEBUG)
     }
 
     @Provides

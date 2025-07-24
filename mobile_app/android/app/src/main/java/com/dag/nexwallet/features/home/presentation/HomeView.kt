@@ -150,20 +150,6 @@ fun HomeView(
                         )
                     }
 
-                    // Stellar Agent card
-                    item {
-                        AgentCard(
-                            title = "BNB AI Bot",
-                            subtitle = "Powered by Nexarb",
-                            description = "Manage your Stellar assets, execute trades, and monitor market activities with AI assistance.",
-                            isActive = true,
-                            iconRes = R.drawable.bnb_logo,
-                            onClick = {
-                                navController.navigate(Destination.BNBChat)
-                            }
-                        )
-                    }
-
                     // HR Automation Tool card
                     item {
                         Text(

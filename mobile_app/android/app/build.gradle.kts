@@ -79,6 +79,7 @@ android {
         buildConfigField("String", "HELIUS_API_KEY", "\"$heliusKey\"")
         val messariKey = System.getenv("MESSARI_API_KEY") ?: project.findProperty("MESSARI_API_KEY")?.toString() ?: "\"\""
         buildConfigField("String", "MESSARI_API_KEY", "\"$messariKey\"")
+
         productFlavors {
             getByName("relaseB") {
                 buildConfigField(

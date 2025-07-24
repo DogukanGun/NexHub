@@ -13,13 +13,7 @@ sealed interface Destination {
     data object HomeScreen: Destination
 
     @Serializable
-    data object StellarChat: Destination
-
-    @Serializable
     data object SolanaChat: Destination
-
-    @Serializable
-    data object BNBChat: Destination
 
     @Serializable
     data object AIView: Destination

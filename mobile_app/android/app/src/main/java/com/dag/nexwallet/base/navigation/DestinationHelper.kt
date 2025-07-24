@@ -13,9 +13,6 @@ fun getDestinationTitle(destination: String): String{
         Destination.SolanaChat.toString()  -> {
             stringResource(R.string.solana_destination_title)
         }
-        Destination.BNBChat.toString()  -> {
-            stringResource(R.string.bnb_destination_title)
-        }
         Destination.AIView.toString()  -> {
             stringResource(R.string.ai_destination_title)
         }

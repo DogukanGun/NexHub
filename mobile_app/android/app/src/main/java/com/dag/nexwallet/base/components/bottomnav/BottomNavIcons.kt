@@ -10,6 +10,5 @@ enum class BottomNavIcon(
 ) {
     Home(R.drawable.baseline_home, Destination.HomeScreen),
     Solana(R.drawable.solana, Destination.SolanaChat),
-    BNB(R.drawable.bnbchain, Destination.BNBChat),
     AIView(R.drawable.ai_icon, Destination.AIView)
 }

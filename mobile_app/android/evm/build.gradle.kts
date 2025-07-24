@@ -40,8 +40,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit.v115)
     androidTestImplementation(libs.androidx.espresso.core.v351)
-    
-    // Circle Programmable Wallet SDK
-    implementation(libs.sdk)
 
+    implementation(libs.metamask.android.sdk)
+    implementation(libs.core)
 }
