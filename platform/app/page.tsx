@@ -1,103 +1,229 @@
-import Image from "next/image";
+'use client';
+import { Navigation } from '@/components/layout/Navigation';
+import { Button } from '@/components/ui/Button';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { Shield, Zap, Lock, BrainCircuit } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="hex-pattern min-h-screen">
+      <Navigation />
+      <main className="relative mt-20">
+        {/* Hero Section */}
+        <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black opacity-80" />
+            {/* Animated hexagon grid background would be here */}
+          </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="container mx-auto px-4 text-center relative z-10"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 1 }}
+              className="mb-8"
+            >
+              <div className="w-40 h-40 mx-auto mb-6 relative">
+                <div className="absolute inset-0 bg-primary opacity-20 rounded-full glowing" />
+                <div className="absolute inset-2 bg-primary opacity-10 rounded-full pulsing" />
+                <div className="absolute inset-4 border-2 border-primary rounded-full rotating" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative w-24 h-24 transform hover:scale-110 transition-transform">
+                    <Image
+                      src="/autobots_logo.svg"
+                      alt="Autobots Logo"
+                      fill
+                      className="object-contain"
+                      style={{ filter: 'invert(1) sepia(1) saturate(5) hue-rotate(359deg) brightness(0.95)' }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <h1 className="text-6xl md:text-8xl font-bold mb-6 gradient-text">
+                NexHub
+              </h1>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-xl md:text-2xl text-text-secondary mb-12 max-w-3xl mx-auto"
+            >
+              Welcome to the future of token launches. Only the worthy shall enter.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="flex flex-col sm:flex-row gap-6 justify-center mb-20"
+            >
+              <Link href="/club">
+                <Button
+                  variant="gradient"
+                  size="lg"
+                  className="cyber-border glowing px-12 py-6 text-lg group"
+                >
+                  <span className="relative flex items-center gap-3">
+                    Enter the Hub
+                    <div className="relative w-6 h-6 transform group-hover:scale-110 transition-transform">
+                      <Image
+                        src="/autobots_logo.svg"
+                        alt="Autobots Logo"
+                        fill
+                        className="object-contain"
+                        style={{ filter: 'invert(1) sepia(1) saturate(5) hue-rotate(359deg) brightness(0.95)' }}
+                      />
+                    </div>
+                  </span>
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* Feature Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-32">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                className="transformer-card p-8 rounded-lg"
+              >
+                <div className="w-16 h-16 mx-auto mb-6 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <div className="relative w-8 h-8">
+                    <Image
+                      src="/autobots_logo.svg"
+                      alt="Autobots Logo"
+                      fill
+                      className="object-contain"
+                      style={{ filter: 'invert(1) sepia(1) saturate(5) hue-rotate(359deg) brightness(0.95)' }}
+                    />
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-primary">Elite Access</h3>
+                <p className="text-text-secondary">
+                  Only those with true knowledge may enter. Prove your worth.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+                className="transformer-card p-8 rounded-lg"
+              >
+                <div className="w-16 h-16 mx-auto mb-6 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <BrainCircuit className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-primary">AI Verification</h3>
+                <p className="text-text-secondary">
+                  Advanced AI ensures only true believers gain access.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.2 }}
+                className="transformer-card p-8 rounded-lg"
+              >
+                <div className="w-16 h-16 mx-auto mb-6 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <Lock className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-primary">Secure Transactions</h3>
+                <p className="text-text-secondary">
+                  Circle-powered security for seamless token purchases.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.4 }}
+                className="transformer-card p-8 rounded-lg"
+              >
+                <div className="w-16 h-16 mx-auto mb-6 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <Zap className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-primary">Instant Access</h3>
+                <p className="text-text-secondary">
+                  Pass the test, gain immediate access to token launches.
+                </p>
+              </motion.div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Additional Sections */}
+        <section className="py-32 relative">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">
+                The Future of Token Launches
+              </h2>
+              <p className="text-xl text-text-secondary max-w-3xl mx-auto">
+                Join an elite community of verified investors who understand and believe in the projects they support.
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+                className="space-y-8"
+              >
+                <div className="transformer-card p-8 rounded-lg">
+                  <h3 className="text-2xl font-bold mb-4 text-primary">Knowledge is Power</h3>
+                  <p className="text-text-secondary">
+                    Our AI-powered verification system ensures that only those who truly understand the project can participate.
+                  </p>
+                </div>
+                <div className="transformer-card p-8 rounded-lg">
+                  <h3 className="text-2xl font-bold mb-4 text-primary">Secure by Design</h3>
+                  <p className="text-text-secondary">
+                    Built on Circle's infrastructure, ensuring the highest level of security for your investments.
+                  </p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+                className="relative"
+              >
+                <div className="aspect-square rounded-lg overflow-hidden cyber-border">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="relative w-40 h-40 transform hover:scale-110 transition-transform">
+                      <Image
+                        src="/autobots_logo.svg"
+                        alt="Autobots Logo"
+                        fill
+                        className="object-contain"
+                        style={{ filter: 'invert(1) sepia(1) saturate(5) hue-rotate(359deg) brightness(0.95)' }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
