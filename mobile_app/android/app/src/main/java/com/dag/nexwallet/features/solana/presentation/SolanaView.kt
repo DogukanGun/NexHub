@@ -1,5 +1,6 @@
 package com.dag.nexwallet.features.solana.presentation
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
@@ -28,13 +29,14 @@ import com.dag.nexwallet.features.solana.presentation.composable.WalletConnectio
 import com.dag.nexwallet.ui.theme.*
 import com.solana.mobilewalletadapter.clientlib.ActivityResultSender
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun SolanaScreen(
     viewModel: SolanaVM = hiltViewModel(),
     sender: ActivityResultSender
 ) {
     val state by viewModel.viewState.collectAsState()
-
+    val activity = LocalContext.current as? Activity
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -49,8 +51,7 @@ fun SolanaScreen(
                 
                 SolanaAgentView(
                     state = successState,
-                    onMessageSend = { viewModel.sendMessage(it) },
-                    onActionExecute = { viewModel.executeAction(it) },
+                    onMessageSend = { viewModel.sendMessage(it, activity) },
                     onHeaderClick = { viewModel.toggleHeader() }
                 )
                 
@@ -59,22 +60,6 @@ fun SolanaScreen(
                     WalletConnectionDialog(
                         onDismiss = { viewModel.dismissWalletConnectionDialog() },
                         onConnect = { viewModel.connectWallet(sender) }
-                    )
-                }
-                
-                // Show Swap Dialog
-                if (successState.showSwapDialog) {
-                    SwapDialog(
-                        onDismiss = { viewModel.dismissSwapDialog() },
-                        onConfirm = { viewModel.executeSwap(it,sender) }
-                    )
-                }
-                
-                // Show Stake Dialog
-                if (successState.showStakeDialog) {
-                    StakeDialog(
-                        onDismiss = { viewModel.dismissStakeDialog() },
-                        onConfirm = { viewModel.executeStake(it, sender) }
                     )
                 }
             }
@@ -90,7 +75,6 @@ fun SolanaScreen(
 private fun SolanaAgentView(
     state: SolanaVS.Success,
     onMessageSend: (String) -> Unit,
-    onActionExecute: (SolanaVS.SuggestedAction) -> Unit,
     onHeaderClick: () -> Unit
 ) {
     Column(
@@ -102,7 +86,6 @@ private fun SolanaAgentView(
         AnimatedHeader(
             state = state,
             onHeaderClick = onHeaderClick,
-            onActionExecute = onActionExecute
         )
         
         Spacer(modifier = Modifier.height(16.dp))
@@ -121,15 +104,7 @@ private fun SolanaAgentView(
                         .weight(1f)
                         .fillMaxWidth()
                 )
-                
-                // Suggested Actions
-                if (state.suggestedActions.isNotEmpty() && !state.isHeaderExpanded) {
-                    SuggestedActions(
-                        actions = state.suggestedActions,
-                        onActionClick = onActionExecute
-                    )
-                }
-                
+
                 // Message Input
                 if (!state.isHeaderExpanded) {
                     MessageInput(onMessageSend = onMessageSend)
@@ -148,7 +123,6 @@ private fun SolanaAgentView(
 private fun AnimatedHeader(
     state: SolanaVS.Success,
     onHeaderClick: () -> Unit,
-    onActionExecute: (SolanaVS.SuggestedAction) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -203,31 +177,7 @@ private fun AnimatedHeader(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        QuickActionButton(
-                            title = "Stake SOL",
-                            onClick = {
-                                onActionExecute(
-                                    SolanaVS.SuggestedAction(
-                                        title = "Stake SOL",
-                                        description = "Stake your SOLs",
-                                        type = SolanaVS.ActionType.STAKE
-                                    )
-                                )
-                            }
-                        )
-                        
-                        QuickActionButton(
-                            title = "Swap Tokens",
-                            onClick = {
-                                onActionExecute(
-                                    SolanaVS.SuggestedAction(
-                                        title = "Swap Tokens",
-                                        description = "Swap your tokens",
-                                        type = SolanaVS.ActionType.SWAP
-                                    )
-                                )
-                            }
-                        )
+
                     }
                 }
             }

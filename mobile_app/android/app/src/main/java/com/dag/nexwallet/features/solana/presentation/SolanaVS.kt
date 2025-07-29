@@ -12,8 +12,6 @@ sealed class SolanaVS: BaseVS {
         val suggestedActions: List<SuggestedAction> = emptyList(),
         val pendingTransaction: PendingTransaction? = null,
         val isHeaderExpanded: Boolean = false,
-        val showSwapDialog: Boolean = false,
-        val showStakeDialog: Boolean = false,
         val showWalletConnectionDialog: Boolean = false,
         val isWalletConnected: Boolean = false
     ) : SolanaVS()
@@ -46,17 +44,9 @@ sealed class SolanaVS: BaseVS {
         val id: String = UUID.randomUUID().toString(),
         val title: String,
         val description: String,
-        val type: ActionType,
         val params: Map<String, String> = emptyMap()
     )
-    
-    enum class ActionType {
-        SWAP,
-        SEND,
-        STAKE,
-        VIEW_TOKEN
-    }
-    
+
     data class TokenInfo(
         val symbol: String,
         val balance: String,
@@ -72,16 +62,9 @@ sealed class SolanaVS: BaseVS {
     
     data class PendingTransaction(
         val id: String = UUID.randomUUID().toString(),
-        val type: TransactionType,
         val params: Map<String, String>,
         val status: TransactionStatus = TransactionStatus.PENDING
     )
-    
-    enum class TransactionType {
-        SWAP,
-        SEND,
-        APPROVE
-    }
     
     enum class TransactionStatus {
         PENDING,

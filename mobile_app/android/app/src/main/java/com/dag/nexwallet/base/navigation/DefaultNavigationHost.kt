@@ -1,7 +1,6 @@
 package com.dag.nexwallet.base.navigation
 
 import AIScreen
-import BnbScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable

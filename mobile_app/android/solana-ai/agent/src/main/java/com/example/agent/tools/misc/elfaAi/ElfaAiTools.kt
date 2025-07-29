@@ -1,7 +1,6 @@
 package com.example.agent.tools.misc.elfaAi
 
 import com.dag.wallet.BuildConfig
-import dev.langchain4j.agent.tool.Tool
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
@@ -34,7 +33,6 @@ class ElfaAiTools {
         return response.body()
     }
 
-    @Tool("Ping the Elfa AI API to check if it's available")
     fun pingElfaAiApi(): String {
         var body: String
         runBlocking {
@@ -43,7 +41,6 @@ class ElfaAiTools {
         return body
     }
 
-    @Tool("Get the status of your Elfa AI API key")
     fun getElfaAiApiKeyStatus(): String {
         var body: String
         runBlocking {
@@ -52,7 +49,6 @@ class ElfaAiTools {
         return body
     }
 
-    @Tool("Get smart mentions with pagination")
     fun getSmartMentions(limit: Int = 100, offset: Int = 0): String {
         var body: String
         runBlocking {
@@ -64,7 +60,6 @@ class ElfaAiTools {
         return body
     }
 
-    @Tool("Get top mentions for a specific ticker")
     fun getTopMentionsByTicker(
         ticker: String,
         timeWindow: String = "1h",
@@ -85,7 +80,6 @@ class ElfaAiTools {
         return body
     }
 
-    @Tool("Search mentions by keywords within a time range")
     fun searchMentionsByKeywords(
         keywords: String,
         from: Long,
@@ -106,7 +100,6 @@ class ElfaAiTools {
         return body
     }
 
-    @Tool("Get trending tokens with customizable parameters")
     fun getTrendingTokens(
         timeWindow: String = "24h",
         page: Int = 1,
@@ -125,7 +118,6 @@ class ElfaAiTools {
         return body
     }
 
-    @Tool("Get smart Twitter account statistics for a specific username")
     fun getSmartTwitterAccountStats(username: String): String {
         var body: String
         runBlocking {

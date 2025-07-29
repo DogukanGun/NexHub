@@ -13,9 +13,8 @@ plugins {
 android {
     namespace = "com.dag.nexwallet"
     compileSdk = 35
-    flavorDimensions += "version"
     testBuildType = "debug"
-    
+
     packaging {
         resources {
             excludes += listOf(
@@ -40,27 +39,15 @@ android {
                 "META-INF/ASL2.0",
                 "META-INF/AL2.0",
                 "META-INF/LGPL2.1",
-                "META-INF/proguard/**"
+                "META-INF/proguard/**",
+
+                "/wallet.proto"
             )
         }
         jniLibs {
             useLegacyPackaging = true
         }
     }
-    buildFeatures {
-        buildConfig = true
-    }
-    productFlavors {
-        create("localB"){
-            dimension = "version"
-            versionNameSuffix = "-lcl"
-        }
-        create("relaseB"){
-            dimension = "version"
-            versionNameSuffix = "-rls"
-        }
-    }
-
     defaultConfig {
         applicationId = "com.dag.nexwallet"
         minSdk = 26
@@ -79,33 +66,16 @@ android {
         buildConfigField("String", "HELIUS_API_KEY", "\"$heliusKey\"")
         val messariKey = System.getenv("MESSARI_API_KEY") ?: project.findProperty("MESSARI_API_KEY")?.toString() ?: "\"\""
         buildConfigField("String", "MESSARI_API_KEY", "\"$messariKey\"")
-
-        productFlavors {
-            getByName("relaseB") {
-                buildConfigField(
-                    "String",
-                    "BASE_URL",
-                    "\"https://bacai.nexarb.com/\""
-                )
-                buildConfigField(
-                    "String",
-                    "BASE_FRONTEND_URL",
-                    "\"https://solba.nexarb.com/api/\""
-                )
-            }
-            getByName("localB"){
-                buildConfigField(
-                    "String",
-                    "BASE_URL",
-                    "\"http://10.0.0.1:8000/\""
-                )
-                buildConfigField(
-                    "String",
-                    "BASE_FRONTEND_URL",
-                    "\"https://solba.nexarb.com/api/\""
-                )
-            }
-        }
+        buildConfigField(
+            "String",
+            "BASE_FRONTEND_URL",
+            "\"https://solba.nexarb.com/api/\""
+        )
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            "\"https://bacai.nexarb.com/\""
+        )
     }
 
     buildTypes {
@@ -192,15 +162,11 @@ dependencies {
 
     //Solana
     implementation(libs.mobile.wallet.adapter.clientlib.ktx)
-    implementation(libs.web3.solana)
     implementation(libs.rpc.core)
     implementation(libs.multimult)
 
     //EncryptedSharedPreferences
     implementation(libs.androidx.security.crypto)
-
-    //Coil
-    implementation(libs.coil3.coil.compose)
 
     //Ktor
     implementation(libs.ktor.client.core)
@@ -212,12 +178,13 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.serialization.gson)
     implementation(libs.ktor.client.okhttp)
-    //Stellar
-    implementation(libs.wallet.sdk)
 
     //Chucker
     debugImplementation(libs.library)
 
     implementation(libs.androidx.material.icons.extended)
+
+    implementation(project(":solana-ai:agent"))
+    implementation(project(":solana-ai:wallet"))
 
 }

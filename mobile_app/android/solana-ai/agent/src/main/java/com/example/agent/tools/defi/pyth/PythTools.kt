@@ -1,6 +1,5 @@
 package com.example.agent.tools.defi.pyth
 
-import dev.langchain4j.agent.tool.Tool
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -48,7 +47,6 @@ class PythTools {
         val parsed: List<ParsedPriceData>
     )
 
-    @Tool("Fetch price feed ID for a given token symbol from Pyth")
     suspend fun fetchPythPriceFeedID(tokenSymbol: String): String {
         return try {
             val response = client.get("$stableHermesServiceUrl/v2/price_feeds") {
@@ -80,7 +78,6 @@ class PythTools {
         }
     }
 
-    @Tool("Fetch the current price for a given Pyth price feed ID")
     suspend fun fetchPythPrice(feedID: String): String {
         return try {
             val response = client.get("$stableHermesServiceUrl/v2/updates/price/latest") {
@@ -125,7 +122,6 @@ class PythTools {
         }
     }
 
-    @Tool("Get both price feed ID and current price for a token symbol")
     suspend fun getTokenPriceBySymbol(tokenSymbol: String): String {
         return try {
             val feedIdResponse = client.get("$stableHermesServiceUrl/v2/price_feeds") {

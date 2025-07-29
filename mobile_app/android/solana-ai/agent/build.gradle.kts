@@ -27,6 +27,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    configurations.all {
+        exclude(group = "com.github.metaplex-foundation.kborsh", module = "kborsh-jvm")
+    }
     kotlinOptions {
         jvmTarget = "11"
     }
@@ -39,11 +42,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(project(":app:aiagent"))
     implementation(project(":solana-ai:wallet"))
-    implementation(libs.langchain4j)
-    implementation(libs.langchain4j.openai)
-    implementation(libs.langchain4j.open.ai)
     implementation(libs.ktor.client.core.v321)
     implementation(libs.ktor.client.cio.v321)
     implementation(libs.kotlinx.serialization.json)
@@ -51,6 +50,12 @@ dependencies {
     implementation(libs.solana)
     implementation(libs.solanakt)
     implementation(libs.metaplex.android)
-    implementation(libs.langchain4j.google.ai.gemini.v0361)
+
+    //Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.ai)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.analytics)
 
 }

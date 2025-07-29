@@ -1,6 +1,5 @@
 package com.example.agent.tools.defi.dexscreener
 
-import dev.langchain4j.agent.tool.Tool
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -45,7 +44,6 @@ class DexScreenerTools {
         val pairs: List<DexScreenerPair>? = null
     )
 
-    @Tool("Get token data by its mint/token address")
     suspend fun getTokenDataByAddress(mintAddress: String): String {
         return try {
             if (mintAddress.isBlank()) {
@@ -71,7 +69,6 @@ class DexScreenerTools {
         }
     }
 
-    @Tool("Get token address from ticker symbol")
     suspend fun getTokenAddressFromTicker(ticker: String): String {
         return try {
             val response = client.get("https://api.dexscreener.com/latest/dex/search?q=${ticker}") {
@@ -100,7 +97,6 @@ class DexScreenerTools {
         }
     }
 
-    @Tool("Get complete token data by ticker symbol")
     suspend fun getTokenDataByTicker(ticker: String): String {
         return try {
             val addressResponse = client.get("https://api.dexscreener.com/latest/dex/search?q=${ticker}") {

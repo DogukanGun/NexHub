@@ -1,6 +1,5 @@
 package com.example.agent.tools.defi.rugcheck
 
-import dev.langchain4j.agent.tool.Tool
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -51,7 +50,6 @@ class Rugcheck {
         val lastUpdated: String? = null
     )
 
-    @Tool("Get a summary report for a token from Rugcheck")
     suspend fun getTokenReportSummary(mint: String): String {
         return try {
             val response = client.get("$baseUrl/tokens/$mint/report/summary")
@@ -62,7 +60,6 @@ class Rugcheck {
         }
     }
 
-    @Tool("Get a detailed report for a token from Rugcheck")
     suspend fun getTokenDetailedReport(mint: String): String {
         return try {
             val response = client.get("$baseUrl/tokens/$mint/report")

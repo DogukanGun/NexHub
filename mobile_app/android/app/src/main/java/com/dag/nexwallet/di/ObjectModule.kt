@@ -14,6 +14,8 @@ import com.dag.nexwallet.base.navigation.Destination
 import com.dag.nexwallet.base.scroll.ScrollStateManager
 import com.dag.nexwallet.data.repository.UserRepository
 import com.dag.nexwallet.domain.DataPreferencesStore
+import com.dag.wallet.ISolanaWalletManager
+import com.dag.wallet.SolanaWalletManager
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
@@ -314,4 +316,9 @@ class ObjectModules {
         }
     }
 
+    @Provides
+    @Singleton
+    fun provideWalletManager(@ApplicationContext context: Context): ISolanaWalletManager {
+        return SolanaWalletManager(context)
+    }
 }

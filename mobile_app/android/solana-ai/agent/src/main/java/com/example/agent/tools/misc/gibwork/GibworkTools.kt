@@ -2,7 +2,6 @@ package com.example.agent.tools.misc.gibwork
 
 import androidx.fragment.app.FragmentActivity
 import com.dag.wallet.SolanaWalletManager
-import dev.langchain4j.agent.tool.Tool
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -48,7 +47,6 @@ class GibworkTools(private val walletManager: SolanaWalletManager) {
         val signature: String
     )
 
-    @Tool("Creates a new task on Gibwork platform")
     fun createTask(
         title: String,
         content: String,
@@ -113,7 +111,6 @@ class GibworkTools(private val walletManager: SolanaWalletManager) {
         return runBlocking { deferred.await() }
     }
 
-    @Tool("Gets the details of a task from Gibwork")
     suspend fun getTaskDetails(taskId: String): String {
         return try {
             val response = client.get("https://api2.gib.work/tasks/public/$taskId")
@@ -123,7 +120,6 @@ class GibworkTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Lists all available tasks on Gibwork")
     suspend fun listTasks(): String {
         return try {
             val response = client.get("https://api2.gib.work/tasks/public")

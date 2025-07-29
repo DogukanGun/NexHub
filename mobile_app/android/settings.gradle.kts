@@ -1,8 +1,6 @@
 import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.mavenCentral
 
-include(":evm")
-
 pluginManagement {
     repositories {
         google {
@@ -28,7 +26,5 @@ dependencyResolutionManagement {
 rootProject.name = "NexWallet"
 include(":app")
 include(":solana-ai")
-include(":app:aiagent")
 include(":solana-ai:wallet")
 include(":solana-ai:agent")
-include(":evm")

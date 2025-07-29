@@ -3,7 +3,6 @@ package com.example.agent.tools.defi.jupiter
 import androidx.fragment.app.FragmentActivity
 import com.dag.wallet.SolanaWalletManager
 import com.solana.core.PublicKey
-import dev.langchain4j.agent.tool.Tool
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -11,7 +10,6 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import java.util.*
 
 class JupiterTools(
@@ -96,7 +94,6 @@ class JupiterTools(
         val swapTransaction: String
     )
 
-    @Tool("Stake SOL with Jupiter validator")
     suspend fun stakeWithJup(amount: Long): String {
         return try {
             val response = client.post("https://worker.jup.ag/blinks/swap/So11111111111111111111111111111111111111112/jupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v/$amount") {
@@ -125,7 +122,6 @@ class JupiterTools(
         }
     }
 
-    @Tool("Swap tokens using Jupiter Exchange")
     suspend fun trade(
         outputMint: String,
         inputAmount: Double,

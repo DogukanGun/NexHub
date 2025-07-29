@@ -1,13 +1,11 @@
 package com.dag.nexwallet.features.solana.presentation
 
-import android.util.Base64
+import android.app.Activity
 import androidx.lifecycle.viewModelScope
 import com.dag.nexwallet.base.BaseVM
 import com.dag.nexwallet.base.components.bottomnav.BottomNavMessageManager
 import com.dag.nexwallet.base.scroll.ScrollStateManager
 import com.dag.nexwallet.data.repository.WalletRepository
-import com.dag.nexwallet.features.solana.domain.model.StakeRequest
-import com.dag.nexwallet.features.solana.domain.model.SwapRequest
 import com.dag.nexwallet.features.solana.domain.usecase.StakeTokensUseCase
 import com.dag.nexwallet.features.solana.domain.usecase.SwapTokensUseCase
 import com.funkatronics.encoders.Base58
@@ -16,8 +14,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.core.net.toUri
-import com.solana.transaction.Transaction
-import com.dag.nexwallet.features.solana.domain.usecase.SendMessageUseCase
+import androidx.fragment.app.FragmentActivity
+import com.dag.wallet.ISolanaWalletManager
+import com.dag.wallet.SolanaWalletManager
+import com.example.agent.SolanaAiAgent
 
 @HiltViewModel
 class SolanaVM @Inject constructor(
@@ -25,8 +25,9 @@ class SolanaVM @Inject constructor(
     private val bottomNavManager: BottomNavMessageManager,
     private val swapTokensUseCase: SwapTokensUseCase,
     private val stakeTokensUseCase: StakeTokensUseCase,
-    private val sendMessageUseCase: SendMessageUseCase,
-    private val walletRepository: WalletRepository
+    private val walletRepository: WalletRepository,
+    private val walletManager: ISolanaWalletManager,
+
 ) : BaseVM<SolanaVS>(SolanaVS.Loading) {
 
     private var walletAdapter: MobileWalletAdapter? = null
@@ -145,7 +146,7 @@ class SolanaVM @Inject constructor(
         }
     }
 
-    fun sendMessage(content: String) {
+    fun sendMessage(content: String, activity: Activity?) {
         val currentState = _viewState.value
         if (currentState is SolanaVS.Success && content.isNotBlank()) {
             val userMessage = SolanaVS.ChatMessage(
@@ -158,12 +159,13 @@ class SolanaVM @Inject constructor(
                 chatMessages = updatedMessages,
                 isHeaderExpanded = false
             )
-            
-            processUserMessage(content)
+            activity?.let {
+                processUserMessage(content, activity)
+            }
         }
     }
 
-    private fun processUserMessage(content: String) {
+    private fun processUserMessage(content: String, activity: Activity) {
         viewModelScope.launch {
             try {
                 // Show loading state
@@ -173,200 +175,25 @@ class SolanaVM @Inject constructor(
                     messageType = SolanaVS.MessageType.TEXT
                 )
                 updateChatMessages(loadingMessage)
-
-                // Send message to agent
-                sendMessageUseCase.execute(content).collect { response ->
-                    response?.let { agentResponse ->
-                        // Remove loading message
-                        val currentState = _viewState.value
-                        if (currentState is SolanaVS.Success) {
-                            _viewState.value = currentState.copy(
-                                chatMessages = currentState.chatMessages.filterNot { it == loadingMessage }
-                            )
-                        }
-
-                        // Handle response
-                        if (agentResponse.success) {
-                            // Add AI response
-                            val aiMessage = SolanaVS.ChatMessage(
-                                content = agentResponse.text,
-                                isFromAI = true
-                            )
-                            updateChatMessages(aiMessage)
-
-                            // Handle transaction if present
-                            agentResponse.transaction?.let { encodedTx ->
-                                // Store transaction for later execution
-                                val currentState = _viewState.value
-                                if (currentState is SolanaVS.Success) {
-                                    _viewState.value = currentState.copy(
-                                        pendingTransaction = SolanaVS.PendingTransaction(
-                                            type = SolanaVS.TransactionType.APPROVE,
-                                            params = mapOf("transaction" to encodedTx),
-                                            status = SolanaVS.TransactionStatus.PENDING
-                                        )
-                                    )
-                                }
-                            }
-                        } else {
-                            handleError(agentResponse.error ?: "Unknown error occurred")
-                        }
-                    } ?: run {
-                        handleError("Failed to get response from agent")
-                    }
-                }
+                val agent = SolanaAiAgent(
+                    walletManager = walletManager as SolanaWalletManager,
+                    activity = activity as FragmentActivity
+                )
+                agent.sendMessage(
+                    content,
+                    "", //TODO add history
+                    onResponse = {
+                        val aiResponse = SolanaVS.ChatMessage(
+                            content = it,
+                            isFromAI = true,
+                            messageType = SolanaVS.MessageType.TEXT
+                        )
+                        updateChatMessages(aiResponse)
+                    },
+                    onError = {}
+                )
             } catch (e: Exception) {
                 handleError("Failed to process message: ${e.message}")
-            }
-        }
-    }
-
-    fun executeAction(action: SolanaVS.SuggestedAction) {
-        val currentState = _viewState.value
-        if (currentState is SolanaVS.Success) {
-            if (!currentState.isWalletConnected) {
-                _viewState.value = currentState.copy(showWalletConnectionDialog = true)
-                return
-            }
-
-            viewModelScope.launch {
-                try {
-                    when (action.type) {
-                        SolanaVS.ActionType.SWAP -> handleSwapAction(action)
-                        SolanaVS.ActionType.SEND -> handleSendAction(action)
-                        SolanaVS.ActionType.STAKE -> handleStakeAction(action)
-                        SolanaVS.ActionType.VIEW_TOKEN -> handleViewTokenAction(action)
-                        else -> {} // Navigation is handled by the parent composable
-                    }
-                } catch (e: Exception) {
-                    handleError("Failed to execute action: ${e.message}")
-                }
-            }
-        }
-    }
-
-    private fun handleSwapAction(action: SolanaVS.SuggestedAction) {
-        val currentState = _viewState.value
-        if (currentState is SolanaVS.Success) {
-            _viewState.value = currentState.copy(showSwapDialog = true)
-        }
-    }
-
-    private fun handleStakeAction(action: SolanaVS.SuggestedAction) {
-        val currentState = _viewState.value
-        if (currentState is SolanaVS.Success) {
-            _viewState.value = currentState.copy(showStakeDialog = true)
-        }
-    }
-
-    fun dismissSwapDialog() {
-        val currentState = _viewState.value
-        if (currentState is SolanaVS.Success) {
-            _viewState.value = currentState.copy(showSwapDialog = false)
-        }
-    }
-
-    fun dismissStakeDialog() {
-        val currentState = _viewState.value
-        if (currentState is SolanaVS.Success) {
-            _viewState.value = currentState.copy(showStakeDialog = false)
-        }
-    }
-
-    fun executeSwap(request: SwapRequest, sender: ActivityResultSender) {
-        viewModelScope.launch {
-            try {
-                val currentState = _viewState.value
-                if (currentState is SolanaVS.Success) {
-                    swapTokensUseCase.execute(request).collect { response ->
-                        response?.swapTransaction?.let { encodedTx ->
-                            executeTransaction(encodedTx, sender)
-                        } ?: run {
-                            handleError("Failed to get swap transaction")
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                handleError("Failed to process swap: ${e.message}")
-            }
-        }
-    }
-
-    fun executeStake(request: StakeRequest, sender: ActivityResultSender) {
-        viewModelScope.launch {
-            try {
-                stakeTokensUseCase.execute(request).collect { response ->
-                    response?.transaction?.let { encodedTx ->
-                        executeTransaction(encodedTx, sender)
-                    } ?: run {
-                        handleError("Failed to get stake transaction")
-                    }
-                }
-            } catch (e: Exception) {
-                handleError("Failed to process staking: ${e.message}")
-            }
-        }
-    }
-
-    private suspend fun executeTransaction(
-        encodedTx: String,
-        sender: ActivityResultSender,
-    ) {
-        try {
-            // Convert base64 transaction to ByteArray
-            val swapTransactionBuf = Base64.decode(encodedTx, Base64.DEFAULT)
-            
-            // Create transaction object
-            val transaction = Transaction.from(swapTransactionBuf)
-            
-            val res = walletAdapter?.transact(sender) { authResult ->
-                signAndSendTransactions(arrayOf(transaction.serialize()))
-            }
-            
-            when (res) {
-                is TransactionResult.Success -> {
-                    val txSignature = res.successPayload?.signatures?.firstOrNull()?.let {
-                        Base58.encodeToString(it)
-                    }
-                    
-                    if (txSignature != null) {
-                        // Add success message
-                        val successMessage = SolanaVS.ChatMessage(
-                            content = "Transaction successful: $txSignature",
-                            isFromAI = true,
-                            messageType = SolanaVS.MessageType.SUCCESS
-                        )
-                        updateChatMessages(successMessage)
-                    }
-                }
-                is TransactionResult.NoWalletFound -> {
-                    handleError("No compatible wallet found. Please install a Solana wallet.")
-                }
-                is TransactionResult.Failure -> {
-                    handleError("Transaction failed: ${res.e.message}")
-                }
-                null -> {
-                    handleError("Failed to process transaction")
-                }
-            }
-        } catch (e: Exception) {
-            handleError("Failed to process transaction: ${e.message}")
-        }
-    }
-
-    private fun updateTransactionStatus(
-        status: SolanaVS.TransactionStatus,
-        additionalParams: Map<String, String> = emptyMap()
-    ) {
-        val currentState = _viewState.value
-        if (currentState is SolanaVS.Success) {
-            currentState.pendingTransaction?.let { pendingTx ->
-                _viewState.value = currentState.copy(
-                    pendingTransaction = pendingTx.copy(
-                        status = status,
-                        params = pendingTx.params + additionalParams
-                    )
-                )
             }
         }
     }
@@ -378,14 +205,6 @@ class SolanaVM @Inject constructor(
                 chatMessages = currentState.chatMessages + newMessage
             )
         }
-    }
-
-    private fun handleSendAction(action: SolanaVS.SuggestedAction) {
-        // TODO: Implement send action
-    }
-
-    private fun handleViewTokenAction(action: SolanaVS.SuggestedAction) {
-        // TODO: Implement view token action
     }
 
     private fun handleError(errorMessage: String) {

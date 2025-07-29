@@ -14,8 +14,6 @@ import com.metaplex.lib.modules.nfts.models.Metadata
 import com.metaplex.lib.solana.SolanaConnectionDriver
 import com.solana.core.PublicKey
 import com.solana.networking.RPCEndpoint
-import dev.langchain4j.agent.tool.Tool
-import org.checkerframework.checker.units.qual.min
 
 class MetaplexTools(private val walletManager: SolanaWalletManager) {
 
@@ -29,7 +27,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         return Metaplex(solanaConnection, solanaIdentityDriver, storageDriver)
     }
 
-    @Tool("Creates a new NFT with specified metadata")
     suspend fun createNft(
         name: String,
         symbol: String = "",
@@ -60,7 +57,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Creates a new Candy Machine for NFT minting")
     suspend fun createCandyMachine(
         itemsAvailable: Long,
         sellerFeeBasisPoints: Int,
@@ -81,7 +77,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Mints an NFT from a Candy Machine")
     suspend fun mintNftFromCandyMachine(candyMachine: CandyMachine): String {
         val metaplex = prepareMetaplex()
         return try {
@@ -92,7 +87,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Finds a Candy Machine by its address")
     suspend fun findCandyMachineByAddress(address: String): String {
         val metaplex = prepareMetaplex()
         return try {
@@ -103,7 +97,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Sets a collection for a Candy Machine")
     suspend fun setCandyMachineCollection(candyMachine: CandyMachine, collectionAddress: String): String {
         val metaplex = prepareMetaplex()
         return try {
@@ -117,7 +110,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Creates a new Candy Machine V2")
     suspend fun createCandyMachineV2(
         price: Long,
         sellerFeeBasisPoints: Int,
@@ -134,7 +126,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Mints an NFT from a Candy Machine V2")
     suspend fun mintNftFromCandyMachineV2(candyMachine: CandyMachineV2): String {
         val metaplex = prepareMetaplex()
         return try {
@@ -145,7 +136,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Finds a Candy Machine V2 by its address")
     suspend fun findCandyMachineV2ByAddress(address: String): String {
         val metaplex = prepareMetaplex()
         return try {
@@ -156,7 +146,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Transfers an NFT to another wallet")
     suspend fun transferNft(
         mintKey: PublicKey, // also know as Token Address
         authority: TokenMetadataAuthority? = null,
@@ -187,7 +176,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Finds all NFTs owned by a specific wallet")
     suspend fun findNftsByOwner(ownerAddress: String): String {
         val metaplex = prepareMetaplex()
         return try {
@@ -199,7 +187,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Finds all NFTs created by a specific Candy Machine")
     suspend fun findNftsByCandyMachine(candyMachine: CandyMachine, version: Int = 1): String {
         val metaplex = prepareMetaplex()
         return try {
@@ -211,7 +198,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Finds all NFTs by creator address")
     suspend fun findNftsByCreator(creatorAddress: String): String {
         val metaplex = prepareMetaplex()
         return try {
@@ -223,7 +209,6 @@ class MetaplexTools(private val walletManager: SolanaWalletManager) {
         }
     }
 
-    @Tool("Finds NFTs by a list of mint addresses")
     suspend fun findNftsByMintList(mintAddresses: List<String>): String {
         val metaplex = prepareMetaplex()
         return try {

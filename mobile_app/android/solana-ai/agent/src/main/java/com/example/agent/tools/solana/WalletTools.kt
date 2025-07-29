@@ -4,13 +4,11 @@ import com.solana.models.Token
 import androidx.fragment.app.FragmentActivity
 import com.dag.wallet.SolanaWalletManager
 import com.solana.core.PublicKey
-import dev.langchain4j.agent.tool.Tool
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 
 class WalletTools(private val walletManager: SolanaWalletManager) {
 
-    @Tool("Creates a new Solana wallet and returns the public key")
     fun createWallet(): String {
         val deferred = CompletableDeferred<String>()
         
@@ -26,7 +24,6 @@ class WalletTools(private val walletManager: SolanaWalletManager) {
         return runBlocking { deferred.await() }
     }
 
-    @Tool("Gets the list of public keys associated with the wallet. Requires biometric authentication.")
     fun getPublicKeys(activity: FragmentActivity): String {
         val deferred = CompletableDeferred<String>()
         
@@ -43,7 +40,6 @@ class WalletTools(private val walletManager: SolanaWalletManager) {
         return runBlocking { deferred.await() }
     }
 
-    @Tool("Signs a transaction using the wallet. Requires biometric authentication.")
     fun signTransaction(txAsBase58: String, activity: FragmentActivity): String {
         val deferred = CompletableDeferred<String>()
         
@@ -61,12 +57,10 @@ class WalletTools(private val walletManager: SolanaWalletManager) {
         return runBlocking { deferred.await() }
     }
 
-    @Tool("Returns the list of supported tokens")
     suspend fun getSupportedTokens(): List<Token> {
         return walletManager.getSupportedTokens()
     }
 
-    @Tool("Closes a token account and returns the transaction signature")
     fun closeTokenAccount(tokenPubkey: String): String {
         val deferred = CompletableDeferred<String>()
         
@@ -86,7 +80,6 @@ class WalletTools(private val walletManager: SolanaWalletManager) {
         return runBlocking { deferred.await() }
     }
 
-    @Tool("Checks if an SPL token account exists for a given mint and destination address")
     fun checkSPLTokenAccountExistence(mintAddress: String, destinationAddress: String): String {
         val deferred = CompletableDeferred<String>()
         
@@ -101,7 +94,6 @@ class WalletTools(private val walletManager: SolanaWalletManager) {
         return runBlocking { deferred.await() }
     }
 
-    @Tool("Gets all token wallets associated with the account")
     fun getTokenWallets(): String {
         val deferred = CompletableDeferred<String>()
         
@@ -121,7 +113,6 @@ class WalletTools(private val walletManager: SolanaWalletManager) {
         return runBlocking { deferred.await() }
     }
 
-    @Tool("Creates a new token account for a given mint address")
     fun createTokenAccount(mintAddress: String): String {
         val deferred = CompletableDeferred<String>()
         
@@ -141,7 +132,6 @@ class WalletTools(private val walletManager: SolanaWalletManager) {
         return runBlocking { deferred.await() }
     }
 
-    @Tool("Sends SOL to a destination address")
     fun sendSOL(destination: String, amount: Long): String {
         val deferred = CompletableDeferred<String>()
         
@@ -162,7 +152,6 @@ class WalletTools(private val walletManager: SolanaWalletManager) {
         return runBlocking { deferred.await() }
     }
 
-    @Tool("Sends SPL tokens to a destination address")
     fun sendSPLTokens(
         mintAddress: String,
         fromPublicKey: String,
@@ -192,7 +181,6 @@ class WalletTools(private val walletManager: SolanaWalletManager) {
         return runBlocking { deferred.await() }
     }
 
-    @Tool("Saves a recovery wallet with the given public key. Requires biometric authentication.")
     fun saveRecoveryWallet(publicKey: String, activity: FragmentActivity): String {
         val deferred = CompletableDeferred<String>()
         

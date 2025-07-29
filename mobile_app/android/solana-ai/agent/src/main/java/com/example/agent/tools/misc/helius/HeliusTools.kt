@@ -1,7 +1,6 @@
 package com.example.agent.tools.misc.helius
 
 import com.dag.wallet.BuildConfig
-import dev.langchain4j.agent.tool.Tool
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.*
@@ -17,12 +16,11 @@ class HeliusTools {
     private val rpcUrl = "https://mainnet.helius-rpc.com"
 
     private fun checkApiKey() {
-        if (BuildConfig.HELIUS_API_KEY.isNullOrEmpty()) {
+        if (BuildConfig.HELIUS_API_KEY.isEmpty()) {
             throw IllegalStateException("HELIUS_API_KEY is not configured in BuildConfig.")
         }
     }
 
-    @Tool("Create a new Helius webhook for monitoring transactions")
     fun createWebhook(accountAddresses: List<String>, webhookURL: String): String {
         checkApiKey()
         var body: String
@@ -45,7 +43,6 @@ class HeliusTools {
         return body
     }
 
-    @Tool("Get details of an existing Helius webhook by ID")
     fun getWebhook(webhookId: String): String {
         checkApiKey()
         var body: String
@@ -59,7 +56,6 @@ class HeliusTools {
         return body
     }
 
-    @Tool("Delete an existing Helius webhook by ID")
     fun deleteWebhook(webhookId: String): String {
         checkApiKey()
         var body: String
@@ -77,7 +73,6 @@ class HeliusTools {
         return body
     }
 
-    @Tool("Parse a Solana transaction using Helius Enhanced Transactions API")
     fun parseTransaction(transactionId: String): String {
         checkApiKey()
         var body: String
@@ -94,7 +89,6 @@ class HeliusTools {
         return body
     }
 
-    @Tool("Get assets owned by a specific Solana wallet address")
     fun getAssetsByOwner(
         ownerAddress: String,
         limit: Int,

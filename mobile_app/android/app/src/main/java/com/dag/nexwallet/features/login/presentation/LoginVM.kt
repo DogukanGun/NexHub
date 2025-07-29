@@ -2,7 +2,6 @@ package com.dag.nexwallet.features.login.presentation
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import coil3.Extras
 import com.dag.nexwallet.BuildConfig
 import com.dag.nexwallet.base.ActivityHolder
 import com.dag.nexwallet.base.BaseVM

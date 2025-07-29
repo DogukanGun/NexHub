@@ -1,7 +1,6 @@
 package com.example.agent.tools.misc.messari
 
 import com.dag.wallet.BuildConfig
-import dev.langchain4j.agent.tool.Tool
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.*
@@ -21,7 +20,6 @@ class MessariTools {
         }
     }
 
-    @Tool("Ask a question to Messari's AI and get a response")
     fun askMessariAi(question: String): String {
         checkApiKey()
         var body: String
