@@ -35,11 +35,16 @@ import com.google.firebase.ai.type.GenerativeBackend
 import com.google.firebase.ai.type.PublicPreviewAPI
 import com.google.firebase.ai.type.TextPart
 import com.google.firebase.ai.type.content
+import com.solana.core.PublicKey
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.boolean
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonPrimitive
 import java.util.UUID
 
 class SolanaAiAgent(
@@ -187,7 +192,185 @@ class SolanaAiAgent(
         val args = functionCall.args
         val result = try {
             withTimeout(REQUEST_TIMEOUT) {
+                // Dispatch to the correct tool based on function name & JSON args
+                val toolResult = when (functionName) {
+                    // DexScreener
+                    "getTokenDataByAddress" ->
+                        dexScreenerTools.getTokenDataByAddress(args["mintAddress"]!!.jsonPrimitive.content)
 
+                    "getTokenAddressFromTicker" ->
+                        dexScreenerTools.getTokenAddressFromTicker(args["ticker"]!!.jsonPrimitive.content)
+
+                    "getTokenDataByTicker" ->
+                        dexScreenerTools.getTokenDataByTicker(args["ticker"]!!.jsonPrimitive.content)
+
+                    // Pyth
+                    "fetchPythPriceFeedID" ->
+                        pythTools.fetchPythPriceFeedID(args["tokenSymbol"]!!.jsonPrimitive.content)
+
+                    "fetchPythPrice" ->
+                        pythTools.fetchPythPrice(args["feedID"]!!.jsonPrimitive.content)
+
+                    "getTokenPriceBySymbol" ->
+                        pythTools.getTokenPriceBySymbol(args["tokenSymbol"]!!.jsonPrimitive.content)
+
+                    // Rugcheck
+                    "getTokenReportSummary" ->
+                        rugcheckTools.getTokenReportSummary(args["mint"]!!.jsonPrimitive.content)
+
+                    "getTokenDetailedReport" ->
+                        rugcheckTools.getTokenDetailedReport(args["mint"]!!.jsonPrimitive.content)
+
+                    // Jupiter
+                    "stakeWithJup" ->
+                        jupiterTools.stakeWithJup(args["amount"]!!.jsonPrimitive.content.toLong())
+
+                    "trade" ->
+                        jupiterTools.trade(
+                            outputMint = args["outputMint"]!!.jsonPrimitive.content,
+                            inputAmount = args["inputAmount"]!!.jsonPrimitive.content.toDouble(),
+                            inputMint = args["inputMint"]?.jsonPrimitive?.content.toString()
+                        )
+
+                    // Metaplex
+                    "createNft" ->
+                        metaplexTools.createNft(
+                            name = args["name"]!!.jsonPrimitive.content,
+                            symbol = args["symbol"]?.jsonPrimitive?.content ?: "",
+                            uri = args["uri"]!!.jsonPrimitive.content,
+                            sellerFeeBasisPoints = args["sellerFeeBasisPoints"]!!.jsonPrimitive.int,
+                            isMutable = args["isMutable"]?.jsonPrimitive?.boolean == true,
+                            isCollection = args["isCollection"]?.jsonPrimitive?.boolean == true
+                        )
+
+                    "transferNft" ->
+                        metaplexTools.transferNft(
+                            mintKey = PublicKey.valueOf(args["mintKey"]!!.jsonPrimitive.content),
+                            toOwner = PublicKey.valueOf(args["toOwner"]!!.jsonPrimitive.content),
+                            amount = args["amount"]?.jsonPrimitive?.int?.toULong() ?: 1UL
+                        )
+
+                    "findNftsByOwner" ->
+                        metaplexTools.findNftsByOwner(args["ownerAddress"]!!.jsonPrimitive.content)
+
+                    // Helius
+                    "createWebhook" ->
+                        heliusTools.createWebhook(
+                            accountAddresses = args["accountAddresses"]!!.jsonArray.map { it.jsonPrimitive.content },
+                            webhookURL = args["webhookURL"]!!.jsonPrimitive.content
+                        )
+
+                    "parseTransaction" ->
+                        heliusTools.parseTransaction(args["transactionId"]!!.jsonPrimitive.content)
+
+                    "getAssetsByOwner" ->
+                        heliusTools.getAssetsByOwner(
+                            ownerAddress = args["ownerAddress"]!!.jsonPrimitive.content,
+                            limit = args["limit"]!!.jsonPrimitive.int,
+                            page = args["page"]?.jsonPrimitive?.int ?: 1,
+                            showFungible = args["showFungible"]?.jsonPrimitive?.boolean != false
+                        )
+
+                    // CoinGecko
+                    "getLatestPrice" ->
+                        coinGeckoTools.getLatestPrice()
+
+                    "getTokenInfo" ->
+                        coinGeckoTools.getTokenInfo(args["tokenAddress"]!!.jsonPrimitive.content)
+
+                    "getTokenPriceData" ->
+                        coinGeckoTools.getTokenPriceData(
+                            tokenAddresses = args["tokenAddresses"]!!.jsonArray.map { it.jsonPrimitive.content }
+                        )
+
+                    "getTopGainers" ->
+                        coinGeckoTools.getTopGainers(
+                            duration = args["duration"]?.jsonPrimitive?.content.toString(),
+                            topCoins = args["topCoins"]?.jsonPrimitive?.content.toString()
+                        )
+
+                    // Allora
+                    "getModelPredictions" ->
+                        alloraTools.getModelPredictions(args["modelId"]!!.jsonPrimitive.content)
+
+                    "getAvailableModels" ->
+                        alloraTools.getAvailableModels()
+
+                    "getModelMetrics" ->
+                        alloraTools.getModelMetrics(args["modelId"]!!.jsonPrimitive.content)
+
+                    "getHistoricalPredictions" ->
+                        alloraTools.getHistoricalPredictions(
+                            modelId = args["modelId"]!!.jsonPrimitive.content,
+                            startDate = args["startDate"]!!.jsonPrimitive.content,
+                            endDate = args["endDate"]!!.jsonPrimitive.content
+                        )
+
+                    // Messari
+                    "askMessariAi" ->
+                        messariTools.askMessariAi(args["question"]!!.jsonPrimitive.content)
+
+                    // Elfa AI
+                    "getSmartMentions" ->
+                        elfaAiTools.getSmartMentions(
+                            limit = args["limit"]?.jsonPrimitive?.int ?: 100,
+                            offset = args["offset"]?.jsonPrimitive?.int ?: 0
+                        )
+
+                    "getTopMentionsByTicker" ->
+                        elfaAiTools.getTopMentionsByTicker(
+                            ticker = args["ticker"]!!.jsonPrimitive.content,
+                            timeWindow = args["timeWindow"]?.jsonPrimitive?.content.toString(),
+                            page = args["page"]?.jsonPrimitive?.int ?: 1,
+                            pageSize = args["pageSize"]?.jsonPrimitive?.int ?: 50,
+                            includeAccountDetails = args["includeAccountDetails"]?.jsonPrimitive?.boolean == true
+                        )
+
+                    "getTrendingTokens" ->
+                        elfaAiTools.getTrendingTokens(
+                            timeWindow = args["timeWindow"]?.jsonPrimitive?.content.toString(),
+                            page = args["page"]?.jsonPrimitive?.int ?: 1,
+                            pageSize = args["pageSize"]?.jsonPrimitive?.int ?: 50,
+                            minMentions = args["minMentions"]?.jsonPrimitive?.int ?: 5
+                        )
+
+                    // Wallet
+                    "createWallet" ->
+                        walletTools.createWallet()
+
+                    "sendSOL" ->
+                        walletTools.sendSOL(
+                            destination = args["destination"]!!.jsonPrimitive.content,
+                            amount = args["amount"]!!.jsonPrimitive.int.toLong()
+                        )
+
+                    "sendSPLTokens" ->
+                        walletTools.sendSPLTokens(
+                            mintAddress = args["mintAddress"]!!.jsonPrimitive.content,
+                            fromPublicKey = args["fromPublicKey"]!!.jsonPrimitive.content,
+                            destinationAddress = args["destinationAddress"]!!.jsonPrimitive.content,
+                            amount = args["amount"]!!.jsonPrimitive.int.toLong(),
+                            allowUnfundedRecipient = args["allowUnfundedRecipient"]?.jsonPrimitive?.boolean
+                                ?: false
+                        )
+
+                    // Gibwork
+                    "createTask" ->
+                        gibworkTools.createTask(
+                            title = args["title"]!!.jsonPrimitive.content,
+                            content = args["content"]!!.jsonPrimitive.content,
+                            requirements = args["requirements"]!!.jsonPrimitive.content,
+                            tags = args["tags"]!!.jsonArray.map { it.jsonPrimitive.content },
+                            tokenMintAddress = args["tokenMintAddress"]!!.jsonPrimitive.content,
+                            tokenAmount = args["tokenAmount"]!!.jsonPrimitive.int.toLong(),
+                            activity = activity
+                        )
+
+                    "getTaskDetails" ->
+                        gibworkTools.getTaskDetails(args["taskId"]!!.jsonPrimitive.content)
+
+                    else -> throw IllegalArgumentException("Unsupported function: $functionName")
+                }
             }
         } catch (e: TimeoutCancellationException) {
             "Error: The request to the tool timed out."
@@ -196,6 +379,7 @@ class SolanaAiAgent(
         }
         return FunctionResponsePart(functionName, result as JsonObject)
     }
+
     /**
      * Send a message to the Solana AI Agent and get a response
      * @param message The user's message
@@ -210,7 +394,7 @@ class SolanaAiAgent(
     ) {
         try {
             // Process the message through AI service
-            val response = ask(message,messageHistoryId)
+            val response = ask(message, messageHistoryId)
             onResponse(response.response)
         } catch (e: Exception) {
             onError("Error processing message: ${e.message}")

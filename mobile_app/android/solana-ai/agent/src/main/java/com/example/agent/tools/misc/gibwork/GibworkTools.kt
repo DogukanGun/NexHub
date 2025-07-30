@@ -55,8 +55,8 @@ class GibworkTools(private val walletManager: SolanaWalletManager) {
         tokenMintAddress: String,
         tokenAmount: Long,
         payer: String? = null,
-        activity: FragmentActivity,
-        ): String {
+        activity: FragmentActivity
+    ): String {
         val deferred = CompletableDeferred<String>()
 
         runBlocking {
