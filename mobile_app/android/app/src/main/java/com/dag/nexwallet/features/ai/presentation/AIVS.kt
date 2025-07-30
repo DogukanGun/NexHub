@@ -9,6 +9,7 @@ sealed class AIVS: BaseVS {
     object StartImageByTextCreation: AIVS()
     object StartVideoByTextCreation: AIVS()
     data class ImageGenerationResponse(val image: Bitmap): AIVS()
+    data class ImageGenerationLoading(val message: String): AIVS()
     object ComingSoon: AIVS()
 }
 

@@ -1,10 +1,15 @@
 package com.dag.nexwallet.features.ai.presentation
 
+import android.content.Context
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewModelScope
 import com.dag.nexwallet.R
+import com.dag.nexwallet.base.AlertDialogManager
 import com.dag.nexwallet.base.BaseVM
+import com.dag.nexwallet.base.components.ImageDownloader
+import com.dag.nexwallet.base.components.PermissionHandler
 import com.dag.nexwallet.base.components.bottomnav.BottomNavMessageManager
+import com.dag.nexwallet.base.navigation.Destination
 import com.dag.nexwallet.base.scroll.ScrollStateManager
 import com.google.firebase.Firebase
 import com.google.firebase.ai.ai
@@ -19,7 +24,10 @@ import javax.inject.Inject
 @HiltViewModel
 class AIVM @Inject constructor(
     private val scrollManager: ScrollStateManager,
-    private val bottomNavManager: BottomNavMessageManager
+    private val bottomNavManager: BottomNavMessageManager,
+    private val imageDownloader: ImageDownloader,
+    private val alertDialogManager: AlertDialogManager,
+    private val permissionHandler: PermissionHandler
 ) : BaseVM<AIVS>(AIVS.MakeDecision) {
 
     val model = Firebase.ai(backend = GenerativeBackend.googleAI()).generativeModel(
@@ -45,7 +53,11 @@ class AIVM @Inject constructor(
     }
 
     fun startVideoByTextCreationEvent(){
-        _viewState.value = AIVS.StartVideoByTextCreation
+        viewModelScope.launch {
+            alertDialogManager.showComingSoonMessage(
+                destination = Destination.AIView
+            )
+        }
     }
 
     fun startMakeDecisionEvent() {
@@ -60,9 +72,35 @@ class AIVM @Inject constructor(
 
     fun generateImageByText(message: String) {
         viewModelScope.launch {
-            val generatedImageAsBitmap = model.generateContent(message)
-                .candidates.first().content.parts.firstNotNullOf { it.asImageOrNull() }
-            _viewState.value = AIVS.ImageGenerationResponse(generatedImageAsBitmap)
+            _viewState.value = AIVS.ImageGenerationLoading("Generating image...")
+            try {
+                val generatedImageAsBitmap = model.generateContent(message)
+                    .candidates.first().content.parts.firstNotNullOf { it.asImageOrNull() }
+                _viewState.value = AIVS.ImageGenerationResponse(generatedImageAsBitmap)
+            } catch (e: Exception) {
+                bottomNavManager.showMessage("Failed to generate image: ${e.message}")
+                _viewState.value = AIVS.StartImageByTextCreation
+            }
+        }
+    }
+
+    fun downloadImage(context: Context, bitmap: android.graphics.Bitmap) {
+        viewModelScope.launch {
+            if (!permissionHandler.hasStoragePermission(context)) {
+                bottomNavManager.showMessage("Storage permission required to save images")
+                return@launch
+            }
+            
+            try {
+                val success = imageDownloader.saveImageToGallery(context, bitmap)
+                if (success) {
+                    bottomNavManager.showMessage("Image downloaded successfully!")
+                } else {
+                    bottomNavManager.showMessage("Failed to save image to gallery")
+                }
+            } catch (e: Exception) {
+                bottomNavManager.showMessage("Error saving image: ${e.message}")
+            }
         }
     }
 }

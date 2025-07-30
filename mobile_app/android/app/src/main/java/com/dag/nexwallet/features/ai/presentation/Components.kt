@@ -3,6 +3,7 @@ package com.dag.nexwallet.features.ai.presentation
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -13,9 +14,12 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -29,6 +33,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.graphics.asImageBitmap
+import android.graphics.Bitmap
 import com.dag.nexwallet.R
 import com.dag.nexwallet.base.components.Accordion
 import com.dag.nexwallet.ui.theme.*
@@ -587,6 +595,113 @@ private fun ActionButton(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium
             )
+        }
+    }
+}
+
+@Composable
+fun ImagePopupDialog(
+    imageBitmap: Bitmap?,
+    onDismiss: () -> Unit,
+    onDownload: () -> Unit,
+    isDownloading: Boolean = false
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.9f))
+        ) {
+            // Clickable background to dismiss dialog
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { onDismiss() }
+            )
+            if (imageBitmap != null) {
+                // Image display
+                Image(
+                    bitmap = imageBitmap.asImageBitmap(),
+                    contentDescription = "Generated Image",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { /* Prevent click propagation */ },
+                    contentScale = ContentScale.Fit
+                )
+                
+                // Top bar with close button
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    IconButton(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(
+                                color = Color.Black.copy(alpha = 0.7f),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    
+                    if (isDownloading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .background(
+                                    color = Color(0xFF2196F3).copy(alpha = 0.8f),
+                                    shape = RoundedCornerShape(8.dp)
+                                ),
+                            color = Color.White,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        IconButton(
+                            onClick = onDownload,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(
+                                    color = Color(0xFF2196F3).copy(alpha = 0.8f),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Download,
+                                contentDescription = "Download",
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+                }
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No image to display",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
         }
     }
 }

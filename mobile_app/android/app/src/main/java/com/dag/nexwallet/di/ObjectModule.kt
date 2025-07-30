@@ -9,8 +9,11 @@ import com.chuckerteam.chucker.api.RetentionManager
 import com.dag.nexwallet.BuildConfig
 import com.dag.nexwallet.base.network.HttpLogger
 import com.dag.nexwallet.base.AlertDialogManager
+import com.dag.nexwallet.base.components.bottomnav.BottomNavMessageManager
 import com.dag.nexwallet.base.navigation.DefaultNavigator
 import com.dag.nexwallet.base.navigation.Destination
+import com.dag.nexwallet.base.components.ImageDownloader
+import com.dag.nexwallet.base.components.PermissionHandler
 import com.dag.nexwallet.base.scroll.ScrollStateManager
 import com.dag.nexwallet.data.repository.UserRepository
 import com.dag.nexwallet.domain.DataPreferencesStore
@@ -320,5 +323,23 @@ class ObjectModules {
     @Singleton
     fun provideWalletManager(@ApplicationContext context: Context): ISolanaWalletManager {
         return SolanaWalletManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImageDownloader(): ImageDownloader {
+        return ImageDownloader()
+    }
+
+    @Provides
+    @Singleton
+    fun provideBottomNavMessageManager(): BottomNavMessageManager {
+        return BottomNavMessageManager()
+    }
+
+    @Provides
+    @Singleton
+    fun providePermissionHandler(): PermissionHandler {
+        return PermissionHandler()
     }
 }

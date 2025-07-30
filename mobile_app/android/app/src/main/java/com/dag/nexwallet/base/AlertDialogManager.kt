@@ -17,20 +17,21 @@ class AlertDialogManager {
         _alertFlow.emit(alertDialogModel)
     }
 
-    fun showComingSoonMessage(){
-        runBlocking(Dispatchers.IO) {
-            _alertFlow.emit(
-                AlertDialogModel(
-                    "Coming Soon!",
-                    "This feature is under development. Please be patient.",
-                    positiveButton = AlertDialogButton(
-                        text = "Go Back",
-                        navigate = Destination.HomeScreen,
-                        type = AlertDialogButtonType.NAVIGATE
-                    )
+    suspend fun showComingSoonMessage(
+        destination: Destination = Destination.HomeScreen
+    ) {
+        _alertFlow.emit(
+            AlertDialogModel(
+                "Coming Soon!",
+                "This feature is under development. Please be patient.",
+                positiveButton = AlertDialogButton(
+                    text = "Go Back",
+                    navigate = destination,
+                    type = AlertDialogButtonType.NAVIGATE
                 )
             )
-        }
+        )
+
     }
 
     fun generateServerErrorMessage() {
