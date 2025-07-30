@@ -128,7 +128,7 @@ fun HomeView(
                     // AI Agents section
                     item {
                         Text(
-                            text = "AI Trading Agents",
+                            text = "Our Future Goal",
                             fontSize = 24.sp,
                             color = primaryText,
                             fontWeight = FontWeight.Bold,
@@ -139,13 +139,13 @@ fun HomeView(
                     // Solana Agent card
                     item {
                         AgentCard(
-                            title = "Solana AI Bot",
-                            subtitle = "Powered by SENDAI",
-                            description = "Interact with Solana blockchain, manage tokens, and get real-time information. Works in text and voice mode.",
+                            title = "The Future - SolanaHub",
+                            subtitle = "Powered by NexArb",
+                            description = "------",
                             isActive = true,
                             iconRes = R.drawable.solana,
                             onClick = { 
-                                navController.navigate(Destination.SolanaChat)
+                                navController.navigate(Destination.ManifestScreen)
                             }
                         )
                     }

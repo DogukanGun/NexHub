@@ -12,6 +12,7 @@ import com.dag.nexwallet.base.extensions.ObserveAsEvents
 import com.dag.nexwallet.features.login.presentation.LoginView
 import com.dag.nexwallet.features.splash.SplashView
 import com.dag.nexwallet.features.home.presentation.HomeView
+import com.dag.nexwallet.features.home.presentation.ManifestScreen
 import com.dag.nexwallet.features.solana.presentation.SolanaScreen
 import com.solana.mobilewalletadapter.clientlib.ActivityResultSender
 
@@ -69,6 +70,12 @@ fun DefaultNavigationHost(
 
             composableWithAnimations<Destination.AIView> {
                 AIScreen()
+            }
+
+            composableWithAnimations<Destination.ManifestScreen> {
+                ManifestScreen(
+                    navController = navController
+                )
             }
         }
     }

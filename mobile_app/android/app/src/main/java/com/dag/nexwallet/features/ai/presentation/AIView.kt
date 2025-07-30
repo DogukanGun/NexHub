@@ -10,8 +10,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dag.nexwallet.features.ai.presentation.AIVM
 import com.dag.nexwallet.features.ai.presentation.AIVS
-import com.dag.nexwallet.features.ai.presentation.ApplyCartoonFilterScreen
-import com.dag.nexwallet.features.ai.presentation.CreateVideoScreen
 import com.dag.nexwallet.features.ai.presentation.DecisionMakerScreen
 import com.dag.nexwallet.features.ai.presentation.TextToImageScreen
 
@@ -36,35 +34,22 @@ fun AIScreen(
                         onVideoByTextCreation = {
                             viewModal.startVideoByTextCreationEvent()
                         },
-                        onCartoonFilterSelected = {
-                            viewModal.startCartoonFilterEvent()
-                        },
                         onCreateImageByTextCreation = {
                             viewModal.startImageByTextCreationEvent()
                         }
                     )
                 }
-                AIVS.StartCartoonFilter -> {
-                    ApplyCartoonFilterScreen(
-                        onBackClick = {
-                            viewModal.startMakeDecisionEvent()
-                        },
-                        onSelectImageClick = {},
-                    )
-                }
-                AIVS.StartVideoByTextCreation -> {
-                    CreateVideoScreen(
-                        onBackClick = {
-                            viewModal.startMakeDecisionEvent()
-                        }
-                    ) { }
+                AIVS.ComingSoon -> {
+
                 }
                 AIVS.StartImageByTextCreation -> {
                     TextToImageScreen(
                         onBackClick = {
                             viewModal.startMakeDecisionEvent()
                         },
-                        onGenerateClick = {  },
+                        onGenerateClick = { message->
+                            viewModal.generateImageByText(message)
+                        },
                     )
                 }
                 else -> {}

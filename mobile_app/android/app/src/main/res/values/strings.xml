@@ -20,4 +20,5 @@
     <string name="solana_destination_title">Solana Chat</string>
     <string name="bnb_destination_title">Bnb News</string>
     <string name="ai_destination_title">Creative Studio</string>
+    <string name="manifest_destination_title">Manifest</string>
 </resources>

@@ -16,6 +16,9 @@ fun getDestinationTitle(destination: String): String{
         Destination.AIView.toString()  -> {
             stringResource(R.string.ai_destination_title)
         }
+        Destination.ManifestScreen.toString() -> {
+            stringResource(R.string.manifest_destination_title)
+        }
         else -> {
             ""
         }

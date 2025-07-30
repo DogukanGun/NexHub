@@ -35,20 +35,12 @@ import com.dag.nexwallet.ui.theme.*
 
 @Composable
 fun DecisionMakerScreen(
-    onCartoonFilterSelected: ()-> Unit,
     onCreateImageByTextCreation: ()-> Unit,
     onVideoByTextCreation: ()-> Unit
 ){
     Column {
         Accordion(stringResource(R.string.ai_view_create_image)) {
             Column {
-                Button(
-                    onClick = {
-                        onCartoonFilterSelected()
-                    }
-                ){
-                    Text(stringResource(R.string.ai_view_create_image_button_filter))
-                }
                 Button(
                     onClick = {
                         onCreateImageByTextCreation()
@@ -76,125 +68,6 @@ fun DecisionMakerScreen(
             .copy(color = Color.LightGray),
         textAlign = TextAlign.Center
     )
-}
-
-@Composable
-fun ApplyCartoonFilterScreen(
-    onBackClick: () -> Unit,
-    onSelectImageClick: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(mainBackground)
-            .padding(16.dp)
-    ) {
-        // Header
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = primaryText
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Apply Cartoon Filter",
-                color = primaryText,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        // Main content card
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = cardBackgroundColor),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Upload icon
-                Box(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .background(
-                            brush = iconGradient,
-                            shape = RoundedCornerShape(16.dp)
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.PhotoLibrary,
-                        contentDescription = null,
-                        tint = primaryText,
-                        modifier = Modifier.size(40.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Text(
-                    text = "Upload Image to Apply Filter",
-                    color = primaryText,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Select an image to apply cartoon filter",
-                    color = secondaryText,
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                // Select Image Button
-                Button(
-                    onClick = onSelectImageClick,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFE91E63)
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PhotoLibrary,
-                            contentDescription = null,
-                            tint = Color.White
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Select Image",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
-            }
-        }
-    }
 }
 
 @Composable

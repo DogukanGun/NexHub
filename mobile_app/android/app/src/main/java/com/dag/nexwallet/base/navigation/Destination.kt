@@ -18,8 +18,11 @@ sealed interface Destination {
     @Serializable
     data object AIView: Destination
 
+    @Serializable
+    data object ManifestScreen: Destination
+
     companion object {
-        val NAV_WITHOUT_BOTTOM_NAVBAR = listOf(Splash, LoginScreen)
+        val NAV_WITHOUT_BOTTOM_NAVBAR = listOf(Splash, LoginScreen, ManifestScreen)
     }
 
 }
