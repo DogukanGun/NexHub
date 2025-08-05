@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexHub - AI-Powered Solana Mobile Ecosystem</title>
+    <style>
+        :root {
+            --primary: #9945FF;
+            --secondary: #14F195;
+            --background: #121212;
+            --text: #FFFFFF;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --accent: #FF6B6B;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            padding: 4rem 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            margin-bottom: 3rem;
+            border-radius: 15px;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section h2 {
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(153, 69, 255, 0.3);
+            border-color: var(--primary);
+        }
+
+        .feature-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .screenshot {
+            width: 100%;
+            max-width: 600px;
+            margin: 1.5rem auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            display: block;
+            border: 2px solid var(--secondary);
+        }
+
+        .mobile-screenshot {
+            width: 100%;
+            max-width: 300px;
+            margin: 1.5rem auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            display: block;
+            border: 2px solid var(--secondary);
+        }
+
+        .roadmap {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .roadmap::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+        }
+
+        .roadmap-item {
+            position: relative;
+            margin-bottom: 3rem;
+            padding-left: 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .roadmap-item::before {
+            content: '';
+            position: absolute;
+            left: -2.5rem;
+            top: 2rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 3px solid var(--background);
+        }
+
+        .roadmap-item h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            border: 1px solid var(--primary);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .tech-tag {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .business-model {
+            background: linear-gradient(135deg, rgba(153, 69, 255, 0.1), rgba(20, 241, 149, 0.1));
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .sustainability-diagram {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid var(--secondary);
+        }
+
+        .revenue-flow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .flow-item {
+            background: rgba(153, 69, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--primary);
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: var(--secondary);
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        ul li::before {
+            content: "▶";
+            color: var(--secondary);
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>NexHub</h1>
+        <p>The Future of AI-Powered Solana Mobile Ecosystem</p>
+        <p style="font-size: 1rem; margin-top: 1rem; opacity: 0.8;">Revolutionizing Mobile DeFi with AI Intelligence</p>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h2>🚀 Project Overview</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+                <span class="highlight">NexHub</span> is a revolutionary platform that combines Solana's mobile ecosystem with AI capabilities, creating a seamless and intelligent blockchain experience. Our platform introduces the <strong>first-ever AI SDK for Solana Mobile</strong> that connects agents to multiple Solana protocols, similar to SEND_AI_SDK, while also featuring an AI-controlled launchpad system.
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">1st</div>
+                    <div>Solana Mobile AI SDK</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">Multi</div>
+                    <div>Protocol Integration</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">AI</div>
+                    <div>Powered Launchpad</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">Free</div>
+                    <div>Wallet Usage</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="platform/public/globe.svg" alt="Global Reach" style="width: 100px; height: 100px; margin: 1rem;">
+                <img src="platform/public/window.svg" alt="Platform Interface" style="width: 100px; height: 100px; margin: 1rem;">
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>✨ Key Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🤖 AI-Powered Wallet</h3>
+                    <p>First-ever Solana Mobile SDK integration with AI capabilities, enabling seamless interaction with multiple Solana protocols through our custom agent implementation. Users can manage their assets intelligently with AI assistance.</p>
+                    <div style="text-align: center;">
+                        <p><strong>NexHub Mobile App Screenshots:</strong></p>
+                        <p style="font-size: 0.9rem; opacity: 0.8;">Login Screen → Home Dashboard → AI Chat → Creative Tools</p>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🎯 Smart Launchpad</h3>
+                    <p>Revolutionary AI-controlled launchpad system where an AI agent makes intelligent accept/reject decisions for users wanting to participate in token launches. The AI analyzes project metrics, tokenomics, and market conditions.</p>
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <img src="platform/public/autobots_logo.svg" alt="AI Agent" style="width: 80px; height: 80px; filter: invert(1);">
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔗 Multi-Protocol SDK</h3>
+                    <p>Our custom-built SDK connects AI agents to multiple Solana protocols, providing developers with unprecedented access to DeFi functionalities through intelligent automation.</p>
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <img src="platform/public/file.svg" alt="SDK Documentation" style="width: 80px; height: 80px; filter: invert(1);">
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📱 Mobile-First Experience</h3>
+                    <p>Built specifically for Solana Seeker phones and mobile ecosystem, providing native mobile experience with seamless wallet integration and protocol interactions.</p>
+                    <div style="text-align: center;">
+                        <p style="font-size: 0.9rem; opacity: 0.8;">Demonstrated in our NexHub prototype app</p>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🌐 Cross-Chain Future</h3>
+                    <p>EVM integration planned for Phase 2, expanding the ecosystem's reach while maintaining the AI-driven approach across multiple blockchain networks.</p>
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <img src="platform/public/globe.svg" alt="Cross-chain Support" style="width: 80px; height: 80px; filter: invert(1);">
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>💰 Sustainable Economics</h3>
+                    <p>Free wallet usage with launchpad revenue covering AI model costs. Designed to keep the platform accessible while maintaining sustainability.</p>
+                    <div style="text-align: center;">
+                        <p style="font-size: 0.9rem; opacity: 0.8;">See detailed model below</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔧 Technical Innovation</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">Our platform introduces groundbreaking features in the Solana mobile ecosystem:</p>
+            
+            <div class="tech-stack">
+                <div class="tech-tag">Solana Mobile SDK</div>
+                <div class="tech-tag">AI Agent Integration</div>
+                <div class="tech-tag">Multi-Protocol Support</div>
+                <div class="tech-tag">Smart Contract Automation</div>
+                <div class="tech-tag">React Native</div>
+                <div class="tech-tag">TypeScript</div>
+                <div class="tech-tag">Rust</div>
+                <div class="tech-tag">Node.js</div>
+            </div>
+            
+            <ul style="font-size: 1.1rem;">
+                <li><strong>First SDK for Solana mobile agent integration</strong> that connects to multiple protocols, available in the solana-ai module</li>
+                <li><strong>Advanced AI integration</strong> for protocol interactions through our custom agent implementation</li>
+                <li><strong>Intelligent decision-making system</strong> for launchpad participation using machine learning models</li>
+                <li><strong>Modular architecture</strong> designed for community-driven development and easy protocol integration</li>
+                <li><strong>Real-time market analysis</strong> for AI-powered investment decisions</li>
+                <li><strong>Secure wallet management</strong> with biometric authentication and hardware security</li>
+            </ul>
+            
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="arch.png" alt="NexHub Technical Architecture" style="max-width: 100%; height: auto; border-radius: 12px; border: 2px solid var(--secondary);">
+                <p style="font-size: 0.9rem; opacity: 0.8;">NexHub Technical Architecture - Solana AI SDK Integration</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💼 Business Model & Sustainability</h2>
+            
+            <div class="sustainability-diagram">
+                <h3 style="color: var(--secondary); text-align: center; margin-bottom: 2rem;">Revenue & Cost Flow Model</h3>
+                
+                <div class="revenue-flow">
+                    <div class="flow-item">
+                        <h4 style="color: var(--primary);">Free Wallet Usage</h4>
+                        <p>✅ No charges for users</p>
+                        <p>✅ Maximum accessibility</p>
+                        <p>✅ User acquisition</p>
+                    </div>
+                    
+                    <div class="flow-item">
+                        <h4 style="color: var(--secondary);">Launchpad Revenue</h4>
+                        <p>💰 Transaction fees</p>
+                        <p>💰 Success-based pricing</p>
+                        <p>💰 Premium features</p>
+                    </div>
+                    
+                    <div class="flow-item">
+                        <h4 style="color: var(--accent);">Cost Coverage</h4>
+                        <p>🤖 LLM API costs</p>
+                        <p>☁️ Infrastructure</p>
+                        <p>🔧 Development</p>
+                    </div>
+                </div>
+                
+                <div class="flow-arrow">⬇️</div>
+                
+                <div style="text-align: center; background: rgba(20, 241, 149, 0.1); padding: 1.5rem; border-radius: 12px;">
+                    <h4 style="color: var(--secondary);">Sustainable Growth Loop</h4>
+                    <p>More Users → More Launchpad Activity → Higher Revenue → Better AI Models → Better User Experience → More Users</p>
+                </div>
+            </div>
+            
+            <div class="business-model">
+                <h3 style="color: var(--secondary); margin-bottom: 1rem;">Revenue Strategy</h3>
+                <ul>
+                    <li><strong>Free Wallet Usage:</strong> No charges for basic wallet functionality to ensure accessibility</li>
+                    <li><strong>Launchpad Revenue:</strong> Small fees from successful token launches cover AI model costs</li>
+                    <li><strong>Premium Features:</strong> Advanced AI analytics and priority access for power users</li>
+                    <li><strong>Protocol Partnerships:</strong> Revenue sharing with integrated Solana protocols</li>
+                </ul>
+                
+                <h3 style="color: var(--secondary); margin: 2rem 0 1rem;">Cost Management</h3>
+                <ul>
+                    <li><strong>LLM API Costs:</strong> Covered by launchpad transaction fees</li>
+                    <li><strong>Infrastructure:</strong> Optimized for cost-efficiency with auto-scaling</li>
+                    <li><strong>Future Partnerships:</strong> Negotiations with GAIA, Lilypad for free model access</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Hackathon Demonstration</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+                For this hackathon, we're presenting a <strong>fully functional Android application</strong> that showcases:
+            </p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>📱 Live Mobile Demo - NexHub App</h3>
+                    <ul>
+                        <li>Working AI wallet with asset management</li>
+                        <li>Real-time protocol interactions</li>
+                        <li>AI-powered transaction recommendations</li>
+                        <li>Seamless Solana Seeker integration</li>
+                    </ul>
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <p style="background: var(--primary); color: white; padding: 1rem; border-radius: 8px; font-weight: bold;">
+                            ✨ NexHub Prototype App Available for Demo ✨
+                        </p>
+                        <p style="font-size: 0.9rem; opacity: 0.8;">
+                            Features: AI Chat, Creative Studio, Multi-Protocol Support
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🤖 AI Launchpad Prototype</h3>
+                    <ul>
+                        <li>AI agent analyzing token projects</li>
+                        <li>Automated accept/reject decisions</li>
+                        <li>User-friendly participation flow</li>
+                        <li>Real-time market data integration</li>
+                    </ul>
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <img src="platform/public/autobots_logo.svg" alt="AI Launchpad" style="width: 100px; height: 100px; filter: invert(1);">
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 1rem;">
+                            AI-powered decision making for safe token launch participation
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📱 NexHub Mobile App Screenshots</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; text-align: center;">
+                Live demonstration of our <span class="highlight">working prototype</span> showcasing AI-powered Solana mobile integration
+            </p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                <div style="text-align: center;">
+                    <img src="public/Screenshot 2025-08-05 at 03.57.13.png" alt="NexHub Login Screen" class="mobile-screenshot">
+                    <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">Welcome Screen</h4>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">AI-Powered Crypto Assistant login interface</p>
+                </div>
+                
+                <div style="text-align: center;">
+                    <img src="public/Screenshot 2025-08-05 at 03.57.36.png" alt="NexHub Home Dashboard" class="mobile-screenshot">
+                    <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">Home Dashboard</h4>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">Main interface with SolanaHub integration and features</p>
+                </div>
+                
+                <div style="text-align: center;">
+                    <img src="public/Screenshot 2025-08-05 at 03.57.46.png" alt="Solana AI Chat" class="mobile-screenshot">
+                    <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">AI Chat Interface</h4>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">Solana AI Agent for transactions and dApp interactions</p>
+                </div>
+                
+                <div style="text-align: center;">
+                    <img src="public/Screenshot 2025-08-05 at 03.58.06.png" alt="Creative Studio" class="mobile-screenshot">
+                    <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">Creative Studio</h4>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">AI-powered image and video creation tools</p>
+                </div>
+                
+                <div style="text-align: center;">
+                    <img src="public/Screenshot 2025-08-05 at 03.58.14.png" alt="NexHub Splash Screen" class="mobile-screenshot">
+                    <h4 style="color: var(--primary); margin: 1rem 0 0.5rem;">App Branding</h4>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">NexHub splash screen and brand identity</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; background: rgba(153, 69, 255, 0.1); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                <h3 style="color: var(--secondary);">🚀 Ready for Live Demo</h3>
+                <p style="font-size: 1.1rem;">
+                    This fully functional Android app demonstrates our Solana AI SDK in action, 
+                    showcasing real-time AI interactions, multi-protocol support, and innovative mobile DeFi experiences.
+                </p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🗺️ Future Roadmap</h2>
+            <div class="roadmap">
+                <div class="roadmap-item">
+                    <h3>Phase 1: Post-Hackathon Expansion (Q1 2024)</h3>
+                    <ul>
+                        <li><strong>Team Growth:</strong> Expand development team for increased capacity</li>
+                        <li><strong>Production App:</strong> Launch production-ready mobile application</li>
+                        <li><strong>SDK Release:</strong> Public release of mobile agent SDK for developers</li>
+                        <li><strong>Community Building:</strong> Establish developer community and documentation</li>
+                        <li><strong>Security Audit:</strong> Comprehensive security review of all systems</li>
+                    </ul>
+                </div>
+                
+                <div class="roadmap-item">
+                    <h3>Phase 2: Ecosystem Growth (Q2-Q3 2024)</h3>
+                    <ul>
+                        <li><strong>Protocol Integration:</strong> Add support for 10+ additional Solana protocols</li>
+                        <li><strong>LLM Partnerships:</strong> Secure partnerships with GAIA, Lilypad for free model usage</li>
+                        <li><strong>Enhanced AI:</strong> Advanced machine learning capabilities and predictive analytics</li>
+                        <li><strong>EVM Support:</strong> Cross-chain functionality with Ethereum and other EVM chains</li>
+                        <li><strong>Advanced Features:</strong> Portfolio management, yield farming automation</li>
+                    </ul>
+                </div>
+                
+                <div class="roadmap-item">
+                    <h3>Phase 3: Community Ownership (Q4 2024)</h3>
+                    <ul>
+                        <li><strong>DAO Establishment:</strong> Community governance for feature selection and development</li>
+                        <li><strong>Open Source Transition:</strong> Release core components as open-source software</li>
+                        <li><strong>Modular Marketplace:</strong> Community-developed modules and integrations</li>
+                        <li><strong>Global Expansion:</strong> Multi-language support and regional partnerships</li>
+                        <li><strong>Developer Grants:</strong> Funding program for community contributions</li>
+                    </ul>
+                </div>
+                
+                <div class="roadmap-item">
+                    <h3>Phase 4: Ecosystem Maturity (2025+)</h3>
+                    <ul>
+                        <li><strong>Full Decentralization:</strong> Complete community ownership and governance</li>
+                        <li><strong>Advanced AI Models:</strong> Custom-trained models for crypto-specific tasks</li>
+                        <li><strong>Institutional Features:</strong> Enterprise-grade tools and compliance</li>
+                        <li><strong>Global Protocol Hub:</strong> Universal interface for all major blockchain protocols</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🏆 Why NexHub Will Win</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🥇 First Mover Advantage</h3>
+                    <p>We're creating the <strong>first AI SDK for Solana Mobile</strong>, establishing ourselves as pioneers in this space before competitors emerge.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🎯 Real Problem Solving</h3>
+                    <p>Addresses genuine pain points in DeFi: complex interfaces, poor decision-making tools, and fragmented protocol access.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📱 Mobile-Native Approach</h3>
+                    <p>Built specifically for the growing Solana mobile ecosystem, not adapted from desktop solutions.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🤝 Community-Driven Vision</h3>
+                    <p>Clear path to community ownership and open-source development, ensuring long-term sustainability.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📞 Contact & Next Steps</h2>
+            <div style="text-align: center; font-size: 1.2rem;">
+                <p>Ready to revolutionize the Solana mobile ecosystem with AI-powered DeFi?</p>
+                <p style="margin: 2rem 0;">
+                    <strong>Let's connect and build the future together!</strong>
+                </p>
+                
+                <div class="stats-grid" style="margin-top: 2rem;">
+                    <div class="stat-card">
+                        <div style="font-size: 1.5rem; color: var(--secondary);">🚀</div>
+                        <div>Innovation</div>
+                    </div>
+                    <div class="stat-card">
+                        <div style="font-size: 1.5rem; color: var(--secondary);">🌟</div>
+                        <div>Excellence</div>
+                    </div>
+                    <div class="stat-card">
+                        <div style="font-size: 1.5rem; color: var(--secondary);">🤝</div>
+                        <div>Community</div>
+                    </div>
+                    <div class="stat-card">
+                        <div style="font-size: 1.5rem; color: var(--secondary);">🔮</div>
+                        <div>Future</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
